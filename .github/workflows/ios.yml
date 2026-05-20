@@ -64,4 +64,5 @@ jobs:
             -test-timeouts-enabled YES \
             -default-test-execution-time-allowance 60 \
             -maximum-test-execution-time-allowance 120 \
+            -verbose \
             CODE_SIGNING_ALLOWED=NO
