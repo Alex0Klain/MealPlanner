@@ -1,0 +1,60 @@
+# Xcode user settings
+xcuserdata/
+
+# Generated header maps
+*.hmap
+
+# App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Playground artifacts
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager build artifacts
+.build/
+
+# Carthage build artifacts
+Carthage/Build/
+
+# Fastlane generated files
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Build configuration files (may contain secrets)
+*.xcconfig
+!Config/Debug.xcconfig
+!Config/Release.xcconfig
+
+# Secrets and keys
+Secrets/
+*.apikey
+*.privatekey
+
+# Local Swift Package Manager artifacts
+Packages/*/DerivedData/
+.swiftpm/
+
+# Swift macro build artifacts
+*.macro-build/
+
+# Compiled Core ML models
+*.mlmodelc
+
+# Fastlane additional output
+fastlane/README.txt
+
+# Test artifacts
+TestResults/
+*.xcresult
+SnapshotFailures/
+
+# Miscellaneous backup and temp files
+*.orig
+*.bak
+*.swp
+*~.nib
