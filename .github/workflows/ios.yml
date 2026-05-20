@@ -20,19 +20,6 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Show environment
-        run: |
-          xcodebuild -version
-          swift --version
-          xcrun simctl list runtimes
-
-      - name: Download iOS Simulator Runtime (если не установлен)
-        run: |
-          if ! xcrun simctl list runtimes | grep -q "iOS"; then
-            echo "No iOS runtime found, downloading..."
-            sudo xcodebuild -downloadPlatform iOS
-          fi
-
       - name: Set Default Scheme
         id: scheme
         run: |
@@ -57,20 +44,24 @@ jobs:
           echo "device=$device" >> $GITHUB_OUTPUT
           echo "Found simulator: $device"
 
-      - name: Build
+      - name: Build for Testing
         run: |
           xcodebuild build-for-testing \
             -scheme "${{ steps.scheme.outputs.scheme }}" \
             -${{ steps.target.outputs.filetype }} "${{ steps.target.outputs.file }}" \
-            -destination "platform=iOS Simulator,id=${{ steps.target.outputs.device }}"
+            -destination "platform=iOS Simulator,id=${{ steps.target.outputs.device }}" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Test
         run: |
+          xctestrun=$(find DerivedData -name "*.xctestrun" | head -1)
+          echo "Using xctestrun: $xctestrun"
           xcodebuild test-without-building \
-            -scheme "MealPlanner" \
-            -project "MealPlanner.xcodeproj" \
+            -xctestrun "$xctestrun" \
             -destination "platform=iOS Simulator,id=${{ steps.target.outputs.device }}" \
-            -debugger-path "" \
-            -disable-concurrent-destination-testing \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty || true
+            -parallel-testing-enabled NO \
+            -test-timeouts-enabled YES \
+            -default-test-execution-time-allowance 60 \
+            -maximum-test-execution-time-allowance 120 \
+            CODE_SIGNING_ALLOWED=NO
