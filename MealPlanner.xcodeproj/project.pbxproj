@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		B291AD462FF4835000520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD452FF4835000520BCC /* ComposableArchitecture */; };
+		B291AD492FF487E600520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD482FF487E600520BCC /* ComposableArchitecture */; };
+		B291AD4B2FF487EC00520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD4A2FF487EC00520BCC /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B291AD492FF487E600520BCC /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,18 +74,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B291AD4B2FF487EC00520BCC /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B291AD472FF487E300520BCC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B2AB7A882FBE69450048F08B = {
 			isa = PBXGroup;
 			children = (
 				B2AB7A932FBE69460048F08B /* MealPlanner */,
 				B2AB7AA12FBE69470048F08B /* MealPlannerTests */,
 				B2AB7AAB2FBE69470048F08B /* MealPlannerUITests */,
+				B291AD472FF487E300520BCC /* Frameworks */,
 				B2AB7A922FBE69460048F08B /* Products */,
 			);
 			sourceTree = "<group>";
@@ -141,6 +153,7 @@
 			);
 			name = MealPlannerTests;
 			packageProductDependencies = (
+				B291AD482FF487E600520BCC /* ComposableArchitecture */,
 			);
 			productName = MealPlannerTests;
 			productReference = B2AB7A9E2FBE69470048F08B /* MealPlannerTests.xctest */;
@@ -164,6 +177,7 @@
 			);
 			name = MealPlannerUITests;
 			packageProductDependencies = (
+				B291AD4A2FF487EC00520BCC /* ComposableArchitecture */,
 			);
 			productName = MealPlannerUITests;
 			productReference = B2AB7AA82FBE69470048F08B /* MealPlannerUITests.xctest */;
@@ -609,6 +623,16 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		B291AD452FF4835000520BCC /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B291AD442FF4835000520BCC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		B291AD482FF487E600520BCC /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B291AD442FF4835000520BCC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		B291AD4A2FF487EC00520BCC /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B291AD442FF4835000520BCC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
