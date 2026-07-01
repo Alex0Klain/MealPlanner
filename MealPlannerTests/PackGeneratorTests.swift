@@ -34,6 +34,26 @@ struct PackGeneratorTests {
         #expect(generator.generate(9, []).isEmpty)
     }
 
+    @Test func packContainsNoDuplicates() {
+        let generator = PackGenerator.live
+        // Каталог из 10 блюд, пак из 9 — раньше это ловил дубли и app крашилась.
+        let dishes = Self.makeCatalog(common: 5, rare: 3, legendary: 2)
+        for _ in 0..<200 {
+            let pack = generator.generate(9, dishes)
+            let ids = Set(pack.map(\.id))
+            #expect(ids.count == pack.count)
+        }
+    }
+
+    @Test func packSizeIsCappedByCatalog() {
+        let generator = PackGenerator.live
+        // Каталог 5 блюд, просят 9 → возвращаем 5 уникальных, а не падаем и не дублируем.
+        let dishes = Self.makeCatalog(common: 3, rare: 1, legendary: 1)
+        let pack = generator.generate(9, dishes)
+        #expect(pack.count == 5)
+        #expect(Set(pack.map(\.id)).count == 5)
+    }
+
     @Test func seededGeneratorIsDeterministic() {
         let dishes = Self.makeCatalog(common: 12, rare: 6, legendary: 3)
         let a = PackGenerator.seeded(42).generate(9, dishes).map(\.id)

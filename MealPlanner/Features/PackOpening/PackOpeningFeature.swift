@@ -72,11 +72,13 @@ public struct PackOpeningFeature {
                 }
 
             case let .packLoaded(dishes):
-                state.cards = IdentifiedArray(
-                    uniqueElements: dishes.enumerated().map { index, dish in
-                        PackCard(dish: dish, revealIndex: index)
-                    }
-                )
+                // Защита от возможных дубликатов: IdentifiedArray(uniqueElements:)
+                // падает fatalError, если в списке два элемента с одинаковым id.
+                var cards = IdentifiedArrayOf<PackCard>()
+                for (index, dish) in dishes.enumerated() {
+                    cards.updateOrAppend(PackCard(dish: dish, revealIndex: index))
+                }
+                state.cards = cards
                 return .none
 
             case .packTapped:

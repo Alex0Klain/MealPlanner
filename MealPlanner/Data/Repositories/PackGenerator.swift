@@ -32,19 +32,29 @@ extension PackGenerator {
 
     // MARK: - Core
 
+    /// Возвращает `min(count, dishes.count)` уникальных блюд.
+    /// Сначала пробуем pool нужной редкости; если исчерпан — берём любое
+    /// ещё не выбранное блюдо. Так распределение 60/30/10 сохраняется, пока
+    /// в каталоге хватает разнообразия, но пак никогда не содержит дубликатов.
     private static func makePack<G: RandomNumberGenerator>(
         count: Int,
         from dishes: [Dish],
         using generator: inout G
     ) -> [Dish] {
+        let limit = min(count, dishes.count)
         var pack: [Dish] = []
-        pack.reserveCapacity(count)
+        var used: Set<Dish.ID> = []
+        pack.reserveCapacity(limit)
 
-        for _ in 0..<count {
+        for _ in 0..<limit {
             let rarity = rollRarity(using: &generator)
-            let pool = dishes.filter { $0.rarity == rarity }
-            let chosen = pool.randomElement(using: &generator) ?? dishes.randomElement(using: &generator)
-            if let chosen { pack.append(chosen) }
+            let pool = dishes.filter { $0.rarity == rarity && !used.contains($0.id) }
+            let chosen = pool.randomElement(using: &generator)
+                ?? dishes.filter { !used.contains($0.id) }.randomElement(using: &generator)
+            if let chosen {
+                pack.append(chosen)
+                used.insert(chosen.id)
+            }
         }
         return pack
     }
