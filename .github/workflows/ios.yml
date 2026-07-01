@@ -83,13 +83,22 @@ jobs:
           name: build-artifacts
           path: DerivedData/Build/Products/
 
+      - name: Resolve local simulator
+        id: sim
+        run: |
+          # UDID симулятора уникален на каждой machine — не переиспользуем
+          # id, пойманный в build job, а выбираем локальный iPhone здесь.
+          device=$(xcrun simctl list devices available | grep "iPhone" | tail -1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          echo "device=$device" >> $GITHUB_OUTPUT
+          echo "Found simulator: $device"
+
       - name: Unit Tests
         run: |
           xctestrun=$(find DerivedData -name "*.xctestrun" | head -1)
           echo "Using xctestrun: $xctestrun"
           xcodebuild test-without-building \
             -xctestrun "$xctestrun" \
-            -destination "platform=iOS Simulator,id=${{ needs.build.outputs.device }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.device }}" \
             -skip-testing MealPlannerUITests \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
@@ -115,13 +124,22 @@ jobs:
           name: build-artifacts
           path: DerivedData/Build/Products/
 
+      - name: Resolve local simulator
+        id: sim
+        run: |
+          # UDID симулятора уникален на каждой machine — не переиспользуем
+          # id, пойманный в build job, а выбираем локальный iPhone здесь.
+          device=$(xcrun simctl list devices available | grep "iPhone" | tail -1 | sed -E 's/.*\(([A-F0-9-]+)\).*/\1/')
+          echo "device=$device" >> $GITHUB_OUTPUT
+          echo "Found simulator: $device"
+
       - name: UI Tests
         run: |
           xctestrun=$(find DerivedData -name "*.xctestrun" | head -1)
           echo "Using xctestrun: $xctestrun"
           xcodebuild test-without-building \
             -xctestrun "$xctestrun" \
-            -destination "platform=iOS Simulator,id=${{ needs.build.outputs.device }}" \
+            -destination "platform=iOS Simulator,id=${{ steps.sim.outputs.device }}" \
             -only-testing MealPlannerUITests \
             -parallel-testing-enabled NO \
             -test-timeouts-enabled YES \
