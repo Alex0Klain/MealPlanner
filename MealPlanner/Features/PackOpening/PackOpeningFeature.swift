@@ -10,11 +10,13 @@ public struct PackOpeningFeature {
         public var selectedIDs: Set<Dish.ID> = []
         public var maxSelectable: Int = 7
         public var date: Date
+        public var alreadyInPlanIDs: Set<Dish.ID> = []
         public var distribution: [Dish.ID: MealSlot] = [:]
 
-        public init(date: Date, alreadyInPlan: Int = 0) {
+        public init(date: Date, alreadyInPlanIDs: Set<Dish.ID> = []) {
             self.date = date
-            self.maxSelectable = max(0, 7 - alreadyInPlan)
+            self.alreadyInPlanIDs = alreadyInPlanIDs
+            self.maxSelectable = max(0, 7 - alreadyInPlanIDs.count)
         }
 
         public var canConfirmReveal: Bool {
@@ -76,7 +78,10 @@ public struct PackOpeningFeature {
                 // падает fatalError, если в списке два элемента с одинаковым id.
                 var cards = IdentifiedArrayOf<PackCard>()
                 for (index, dish) in dishes.enumerated() {
-                    cards.updateOrAppend(PackCard(dish: dish, revealIndex: index))
+                    let inPlan = state.alreadyInPlanIDs.contains(dish.id)
+                    cards.updateOrAppend(
+                        PackCard(dish: dish, isInPlan: inPlan, revealIndex: index)
+                    )
                 }
                 state.cards = cards
                 return .none

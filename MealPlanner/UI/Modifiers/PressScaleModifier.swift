@@ -1,28 +1,29 @@
 import SwiftUI
 
-/// Сжимает контент до 0.96 при нажатии. ARCHITECTURE.md → Card Visual States → Press.
-public struct PressScaleModifier: ViewModifier {
-    @State private var isPressed = false
+/// ButtonStyle: сжимает контент до 0.96 при нажатии, добавляет лёгкое затемнение.
+/// ARCHITECTURE.md → Card Visual States → Press.
+///
+/// Полагаемся на `configuration.isPressed`, а не на `onLongPressGesture` —
+/// так UIKit сам корректно отменяет нажатие, если палец ушёл далеко, и
+/// не съедает `Button` action.
+public struct ScaledPressButtonStyle: ButtonStyle {
+    public init() {}
 
-    public func body(content: Content) -> some View {
-        content
-            .scaleEffect(isPressed ? 0.96 : 1.0)
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1.0)
             .overlay(
-                Color.black.opacity(isPressed ? 0.22 : 0)
+                Color.black.opacity(configuration.isPressed ? 0.22 : 0)
                     .allowsHitTesting(false)
             )
-            .animation(Motion.select, value: isPressed)
-            .onLongPressGesture(
-                minimumDuration: 0,
-                maximumDistance: .infinity,
-                perform: {},
-                onPressingChanged: { pressing in isPressed = pressing }
-            )
+            .animation(Motion.select, value: configuration.isPressed)
     }
 }
 
 extension View {
+    /// Convenience: применяет ScaledPressButtonStyle к Button.
+    /// Внутри `.buttonStyle(.plain)` не нужен — стиль сам красит содержимое.
     public func pressScale() -> some View {
-        modifier(PressScaleModifier())
+        buttonStyle(ScaledPressButtonStyle())
     }
 }

@@ -53,12 +53,23 @@ public struct WeekPlannerFeature {
                 return .none
 
             case let .dishesLoaded(dishes):
-                state.dishesByID = Dictionary(uniqueKeysWithValues: dishes.map { ($0.id, $0) })
+                state.dishesByID = Dictionary(
+                    dishes.map { ($0.id, $0) },
+                    uniquingKeysWith: { first, _ in first }
+                )
                 return .none
 
             case let .dayTapped(date):
                 state.path.append(.dayDetail(DayDetailFeature.State(date: date)))
                 return .none
+
+            case .path(.popFrom):
+                // Возврат с DayDetail — план мог измениться, перечитываем неделю
+                let weekStart = state.weekStart
+                return .run { [mealPlanRepository] send in
+                    let days = await mealPlanRepository.weekPlans(weekStart)
+                    await send(.daysLoaded(days))
+                }
 
             case .path:
                 return .none

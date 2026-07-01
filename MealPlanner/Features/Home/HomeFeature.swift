@@ -25,7 +25,6 @@ public struct HomeFeature {
         case slotTapped(MealSlot)
         case mealTapped(PlannedMeal)
         case removeMealTapped(PlannedMeal)
-        case mealRemoved(UUID)
         case destination(PresentationAction<Destination.Action>)
     }
 
@@ -58,14 +57,17 @@ public struct HomeFeature {
                 return .none
 
             case let .dishesLoaded(dishes):
-                state.dishesByID = Dictionary(uniqueKeysWithValues: dishes.map { ($0.id, $0) })
+                state.dishesByID = Dictionary(
+                    dishes.map { ($0.id, $0) },
+                    uniquingKeysWith: { first, _ in first }
+                )
                 return .none
 
             case .packCtaTapped:
                 state.destination = .packOpening(
                     PackOpeningFeature.State(
                         date: state.date,
-                        alreadyInPlan: state.plan.meals.count
+                        alreadyInPlanIDs: Set(state.plan.meals.map(\.dishID))
                     )
                 )
                 return .none
@@ -85,21 +87,21 @@ public struct HomeFeature {
                 let date = state.date
                 return .run { [mealPlanRepository] send in
                     try? await mealPlanRepository.removeMeal(meal.dishID, date)
-                    await send(.mealRemoved(meal.dishID))
+                    let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+                    await send(.planLoaded(plan))
                 }
-
-            case let .mealRemoved(dishID):
-                state.plan.meals.removeAll { $0.dishID == dishID }
-                return .none
 
             // MARK: Destination delegate handling
 
             case let .destination(.presented(.packOpening(.delegate(.finished(meals))))):
-                state.plan.meals.append(contentsOf: meals)
                 state.destination = nil
-                let snapshot = state.plan
-                return .run { [mealPlanRepository] _ in
-                    try? await mealPlanRepository.save(snapshot)
+                let date = state.date
+                return .run { [mealPlanRepository] send in
+                    for meal in meals {
+                        try? await mealPlanRepository.addMeal(meal.dishID, meal.slot, date)
+                    }
+                    let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+                    await send(.planLoaded(plan))
                 }
 
             case .destination(.presented(.packOpening(.delegate(.dismiss)))):
@@ -107,13 +109,12 @@ public struct HomeFeature {
                 return .none
 
             case let .destination(.presented(.addMealSlot(.delegate(.picked(dish, slot))))):
-                state.plan.meals.append(PlannedMeal(dishID: dish.id, slot: slot))
                 state.destination = nil
-                let snapshot = state.plan
                 let date = state.date
-                return .run { [mealPlanRepository] _ in
+                return .run { [mealPlanRepository] send in
                     try? await mealPlanRepository.addMeal(dish.id, slot, date)
-                    try? await mealPlanRepository.save(snapshot)
+                    let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+                    await send(.planLoaded(plan))
                 }
 
             case .destination(.presented(.addMealSlot(.delegate(.dismiss)))):

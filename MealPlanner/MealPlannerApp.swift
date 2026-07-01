@@ -27,8 +27,18 @@ struct MealPlannerApp: App {
         if let container = try? ModelContainer(for: DayPlan.self) {
             return container
         }
-        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try! ModelContainer(for: DayPlan.self, configurations: configuration)
+        do {
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+            return try ModelContainer(for: DayPlan.self, configurations: configuration)
+        } catch {
+            // Даже in-memory контейнер не поднялся — это невосстановимо:
+            // SwiftData не работоспособна. Явный фатал с описанием лучше,
+            // чем неопределённый крэш где-то дальше.
+            preconditionFailure(
+                "Unable to create even an in-memory ModelContainer: \(error). " +
+                "SwiftData is broken; the app cannot proceed."
+            )
+        }
     }
 
     var body: some Scene {

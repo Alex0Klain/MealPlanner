@@ -55,8 +55,15 @@ struct PackOpeningFeatureTests {
                 steps: []
             )
         }
+        let existing: Set<UUID> = [
+            UUID(uuidString: "22222222-0000-0000-0000-000000000001")!,
+            UUID(uuidString: "22222222-0000-0000-0000-000000000002")!,
+            UUID(uuidString: "22222222-0000-0000-0000-000000000003")!,
+            UUID(uuidString: "22222222-0000-0000-0000-000000000004")!,
+            UUID(uuidString: "22222222-0000-0000-0000-000000000005")!
+        ]
         let store = TestStore(
-            initialState: PackOpeningFeature.State(date: .now, alreadyInPlan: 5)
+            initialState: PackOpeningFeature.State(date: .now, alreadyInPlanIDs: existing)
         ) {
             PackOpeningFeature()
         } withDependencies: {
@@ -76,5 +83,46 @@ struct PackOpeningFeatureTests {
 
         #expect(store.state.selectedIDs.count == 2)
         #expect(!store.state.selectedIDs.contains(dishes[2].id))
+    }
+
+    @Test func packCardMarksAlreadyInPlanDishes() async {
+        let dishes = (0..<3).map {
+            Dish(
+                id: UUID(),
+                name: "Dish \($0)",
+                cuisine: .home,
+                emoji: "🍽",
+                cookTimeMinutes: 5,
+                calories: 100,
+                proteinGrams: 10,
+                rarity: .common,
+                difficulty: .one,
+                ingredients: [],
+                steps: []
+            )
+        }
+        // Первое блюдо в паке уже в плане — карточка должна быть isInPlan = true
+        let alreadyInPlan: Set<UUID> = [dishes[0].id]
+        let store = TestStore(
+            initialState: PackOpeningFeature.State(date: .now, alreadyInPlanIDs: alreadyInPlan)
+        ) {
+            PackOpeningFeature()
+        } withDependencies: {
+            $0.dishRepository = .preview
+            $0.packGenerator  = PackGenerator { _, _ in dishes }
+        }
+        store.exhaustivity = .off
+
+        await store.send(.onAppear)
+        await store.receive(\.packLoaded)
+
+        #expect(store.state.cards[id: dishes[0].id]?.isInPlan == true)
+        #expect(store.state.cards[id: dishes[1].id]?.isInPlan == false)
+        #expect(store.state.cards[id: dishes[2].id]?.isInPlan == false)
+
+        // Тап по уже-в-плане карточке не должен её выбирать
+        await store.send(.burstFinished)
+        await store.send(.cardTapped(dishes[0].id))
+        #expect(store.state.selectedIDs.isEmpty)
     }
 }

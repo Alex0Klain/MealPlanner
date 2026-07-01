@@ -78,8 +78,23 @@ extension Dish {
             proteinGrams: 12,
             rarity: .common,
             difficulty: .one,
-            ingredients: [],
-            steps: []
+            ingredients: [
+                Ingredient(emoji: "🌾", name: "Овсяные хлопья", amount: "60 г"),
+                Ingredient(emoji: "🥛", name: "Молоко",         amount: "200 мл"),
+                Ingredient(emoji: "🫐", name: "Ягоды",          amount: "горсть"),
+                Ingredient(emoji: "🍯", name: "Мёд",            amount: "по вкусу")
+            ],
+            steps: [
+                RecipeStep(order: 1, title: "Залить молоко",
+                           description: "Поставить кастрюлю на средний огонь, влить молоко.",
+                           durationMinutes: 2),
+                RecipeStep(order: 2, title: "Добавить хлопья",
+                           description: "Всыпать овсянку, помешивать.",
+                           durationMinutes: 5),
+                RecipeStep(order: 3, title: "Подать с ягодами",
+                           description: "Выключить огонь, добавить ягоды и мёд.",
+                           durationMinutes: 2)
+            ]
         ),
         Dish(
             id: UUID(uuidString: "11111111-0000-0000-0000-000000000003")!,
@@ -91,8 +106,19 @@ extension Dish {
             proteinGrams: 32,
             rarity: .rare,
             difficulty: .two,
-            ingredients: [],
-            steps: []
+            ingredients: [
+                Ingredient(emoji: "🍗", name: "Куриное филе", amount: "200 г"),
+                Ingredient(emoji: "🍜", name: "Лапша рамен",  amount: "100 г"),
+                Ingredient(emoji: "🥚", name: "Яйцо",         amount: "1 шт")
+            ],
+            steps: [
+                RecipeStep(order: 1, title: "Бульон",
+                           description: "Отварить курицу с луком и имбирём.",
+                           durationMinutes: 20),
+                RecipeStep(order: 2, title: "Собрать миску",
+                           description: "Лапша, бульон, курица, половинка яйца.",
+                           durationMinutes: 3)
+            ]
         ),
         Dish(
             id: UUID(uuidString: "11111111-0000-0000-0000-000000000008")!,
@@ -105,8 +131,19 @@ extension Dish {
             rarity: .legendary,
             difficulty: .three,
             cardNumber: 3,
-            ingredients: [],
-            steps: []
+            ingredients: [
+                Ingredient(emoji: "🍣", name: "Лосось", amount: "180 г"),
+                Ingredient(emoji: "🍚", name: "Рис",    amount: "150 г"),
+                Ingredient(emoji: "🥑", name: "Авокадо", amount: "1/2 шт")
+            ],
+            steps: [
+                RecipeStep(order: 1, title: "Рис",
+                           description: "Отварить рис, заправить рисовым уксусом.",
+                           durationMinutes: 15),
+                RecipeStep(order: 2, title: "Подача",
+                           description: "Выложить рис в чашу, сверху овощи и лосось.",
+                           durationMinutes: 5)
+            ]
         )
     ]
 }
