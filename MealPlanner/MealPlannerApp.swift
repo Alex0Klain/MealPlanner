@@ -8,11 +8,7 @@ struct MealPlannerApp: App {
     let store: StoreOf<AppFeature>
 
     init() {
-        do {
-            modelContainer = try ModelContainer(for: DayPlan.self)
-        } catch {
-            fatalError("Failed to create ModelContainer: \(error)")
-        }
+        modelContainer = Self.makeModelContainer()
 
         let liveRepository = MealPlanRepository.live(container: modelContainer)
         store = withDependencies {
@@ -22,6 +18,17 @@ struct MealPlannerApp: App {
                 AppFeature()
             }
         }
+    }
+
+    /// Пытаемся поднять постоянный store; если sandbox запрещает файловый доступ
+    /// (например, unit-тесты в CI поднимают приложение как test host), падаем
+    /// в in-memory режим, чтобы `@main`-инициализация не крашила процесс.
+    private static func makeModelContainer() -> ModelContainer {
+        if let container = try? ModelContainer(for: DayPlan.self) {
+            return container
+        }
+        let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: DayPlan.self, configurations: configuration)
     }
 
     var body: some Scene {
