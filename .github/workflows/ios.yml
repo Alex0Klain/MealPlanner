@@ -56,6 +56,7 @@ jobs:
             -${{ steps.target.outputs.filetype }} "${{ steps.target.outputs.file }}" \
             -destination "platform=iOS Simulator,id=${{ steps.target.outputs.device }}" \
             -derivedDataPath DerivedData \
+            -skipMacroValidation \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Upload build artifacts
