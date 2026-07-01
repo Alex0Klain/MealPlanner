@@ -52,8 +52,14 @@ extension MealPlanRepository {
         )
     }
 
-    /// In-memory мок для превью и тестов.
-    public static let preview: MealPlanRepository = {
+    /// In-memory мок для превью — общий инстанс, у которого сохраняется
+    /// состояние между обращениями (нужно превью, чтобы сохранение блюда
+    /// отражалось в UI).
+    public static let preview: MealPlanRepository = .inMemory()
+
+    /// Создаёт свежий in-memory репозиторий с приватным хранилищем.
+    /// Используйте в тестах, чтобы каждый тест видел чистое состояние.
+    public static func inMemory() -> MealPlanRepository {
         let storage = InMemoryPlanStorage()
         return MealPlanRepository(
             planForDate: { date in await storage.plan(for: date) },
@@ -66,7 +72,7 @@ extension MealPlanRepository {
                 await storage.removeMeal(dishID: dishID, date: date)
             }
         )
-    }()
+    }
 
     public static let unimplemented = MealPlanRepository(
         planForDate: { _ in fatalError("MealPlanRepository.planForDate not implemented") },

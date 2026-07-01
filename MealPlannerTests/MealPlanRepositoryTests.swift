@@ -6,7 +6,7 @@ import MealPlanner
 struct MealPlanRepositoryTests {
 
     @Test func savingPlanIsRetrievable() async throws {
-        let repo = MealPlanRepository.preview
+        let repo = MealPlanRepository.inMemory()
         let date = Calendar.current.startOfDay(for: .now)
         let dish = Dish.previewCatalog[0]
 
@@ -19,7 +19,7 @@ struct MealPlanRepositoryTests {
     }
 
     @Test func removeMealClearsEntry() async throws {
-        let repo = MealPlanRepository.preview
+        let repo = MealPlanRepository.inMemory()
         let date = Calendar.current.startOfDay(for: .now)
         let dish = Dish.previewCatalog[1]
 
@@ -31,7 +31,7 @@ struct MealPlanRepositoryTests {
     }
 
     @Test func weekPlansReturnsSevenDays() async {
-        let repo = MealPlanRepository.preview
+        let repo = MealPlanRepository.inMemory()
         let plans = await repo.weekPlans(.now)
         #expect(plans.count == 7)
     }
