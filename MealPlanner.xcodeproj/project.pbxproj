@@ -10,6 +10,18 @@
 		B291AD462FF4835000520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD452FF4835000520BCC /* ComposableArchitecture */; };
 		B291AD492FF487E600520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD482FF487E600520BCC /* ComposableArchitecture */; };
 		B291AD4B2FF487EC00520BCC /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = B291AD4A2FF487EC00520BCC /* ComposableArchitecture */; };
+		B2C101030100000000000000 /* CasePaths in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020100000000000000 /* CasePaths */; };
+		B2C101030200000000000000 /* Clocks in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020200000000000000 /* Clocks */; };
+		B2C101030300000000000000 /* Dependencies in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020300000000000000 /* Dependencies */; };
+		B2C101030400000000000000 /* IdentifiedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020400000000000000 /* IdentifiedCollections */; };
+		B2C101030500000000000000 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020500000000000000 /* OrderedCollections */; };
+		B2C101030600000000000000 /* Perception in Frameworks */ = {isa = PBXBuildFile; productRef = B2C101020600000000000000 /* Perception */; };
+		B2C102030100000000000000 /* CasePaths in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010100000000000000 /* CasePaths */; };
+		B2C102030200000000000000 /* Clocks in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010200000000000000 /* Clocks */; };
+		B2C102030300000000000000 /* Dependencies in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010300000000000000 /* Dependencies */; };
+		B2C102030400000000000000 /* IdentifiedCollections in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010400000000000000 /* IdentifiedCollections */; };
+		B2C102030500000000000000 /* OrderedCollections in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010500000000000000 /* OrderedCollections */; };
+		B2C102030600000000000000 /* Perception in Frameworks (Tests) */ = {isa = PBXBuildFile; productRef = B2C102010600000000000000 /* Perception */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +71,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B291AD462FF4835000520BCC /* ComposableArchitecture in Frameworks */,
+				B2C101030100000000000000 /* CasePaths in Frameworks */,
+				B2C101030200000000000000 /* Clocks in Frameworks */,
+				B2C101030300000000000000 /* Dependencies in Frameworks */,
+				B2C101030400000000000000 /* IdentifiedCollections in Frameworks */,
+				B2C101030500000000000000 /* OrderedCollections in Frameworks */,
+				B2C101030600000000000000 /* Perception in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,6 +85,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B291AD492FF487E600520BCC /* ComposableArchitecture in Frameworks */,
+				B2C102030100000000000000 /* CasePaths in Frameworks (Tests) */,
+				B2C102030200000000000000 /* Clocks in Frameworks (Tests) */,
+				B2C102030300000000000000 /* Dependencies in Frameworks (Tests) */,
+				B2C102030400000000000000 /* IdentifiedCollections in Frameworks (Tests) */,
+				B2C102030500000000000000 /* OrderedCollections in Frameworks (Tests) */,
+				B2C102030600000000000000 /* Perception in Frameworks (Tests) */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +154,12 @@
 			name = MealPlanner;
 			packageProductDependencies = (
 				B291AD452FF4835000520BCC /* ComposableArchitecture */,
+				B2C101020100000000000000 /* CasePaths */,
+				B2C101020200000000000000 /* Clocks */,
+				B2C101020300000000000000 /* Dependencies */,
+				B2C101020400000000000000 /* IdentifiedCollections */,
+				B2C101020500000000000000 /* OrderedCollections */,
+				B2C101020600000000000000 /* Perception */,
 			);
 			productName = MealPlanner;
 			productReference = B2AB7A912FBE69460048F08B /* MealPlanner.app */;
@@ -154,6 +184,12 @@
 			name = MealPlannerTests;
 			packageProductDependencies = (
 				B291AD482FF487E600520BCC /* ComposableArchitecture */,
+				B2C102010100000000000000 /* CasePaths */,
+				B2C102010200000000000000 /* Clocks */,
+				B2C102010300000000000000 /* Dependencies */,
+				B2C102010400000000000000 /* IdentifiedCollections */,
+				B2C102010500000000000000 /* OrderedCollections */,
+				B2C102010600000000000000 /* Perception */,
 			);
 			productName = MealPlannerTests;
 			productReference = B2AB7A9E2FBE69470048F08B /* MealPlannerTests.xctest */;
@@ -217,6 +253,12 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				B291AD442FF4835000520BCC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+				B2C101010100000000000000 /* XCRemoteSwiftPackageReference "swift-case-paths" */,
+				B2C101010200000000000000 /* XCRemoteSwiftPackageReference "swift-clocks" */,
+				B2C101010300000000000000 /* XCRemoteSwiftPackageReference "swift-dependencies" */,
+				B2C101010400000000000000 /* XCRemoteSwiftPackageReference "swift-identified-collections" */,
+				B2C101010500000000000000 /* XCRemoteSwiftPackageReference "swift-collections" */,
+				B2C101010600000000000000 /* XCRemoteSwiftPackageReference "swift-perception" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B2AB7A922FBE69460048F08B /* Products */;
@@ -345,7 +387,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -353,6 +395,8 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				ENABLE_DEBUG_DYLIB = NO;
 			};
 			name = Debug;
 		};
@@ -403,12 +447,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -430,7 +475,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -440,10 +485,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -465,7 +510,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -475,10 +520,10 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = nonisolated;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -491,7 +536,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 955TU6L58K;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.alexguz.MealPlannerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -499,7 +544,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MealPlanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MealPlanner";
 			};
@@ -513,7 +558,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 955TU6L58K;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.alexguz.MealPlannerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -521,7 +566,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MealPlanner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MealPlanner";
 			};
@@ -541,7 +586,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MealPlanner;
 			};
@@ -561,7 +606,7 @@
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MealPlanner;
 			};
@@ -619,6 +664,54 @@
 			traits = (
 			);
 		};
+		B2C101010100000000000000 /* XCRemoteSwiftPackageReference "swift-case-paths" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-case-paths";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.7.0;
+			};
+		};
+		B2C101010200000000000000 /* XCRemoteSwiftPackageReference "swift-clocks" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-clocks";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.6;
+			};
+		};
+		B2C101010300000000000000 /* XCRemoteSwiftPackageReference "swift-dependencies" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-dependencies";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.9.0;
+			};
+		};
+		B2C101010400000000000000 /* XCRemoteSwiftPackageReference "swift-identified-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-identified-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		B2C101010500000000000000 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		B2C101010600000000000000 /* XCRemoteSwiftPackageReference "swift-perception" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-perception";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -636,6 +729,66 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B291AD442FF4835000520BCC /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		B2C101020100000000000000 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010100000000000000 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+		B2C101020200000000000000 /* Clocks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010200000000000000 /* XCRemoteSwiftPackageReference "swift-clocks" */;
+			productName = Clocks;
+		};
+		B2C101020300000000000000 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010300000000000000 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		B2C101020400000000000000 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010400000000000000 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+		B2C101020500000000000000 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010500000000000000 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		B2C101020600000000000000 /* Perception */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010600000000000000 /* XCRemoteSwiftPackageReference "swift-perception" */;
+			productName = Perception;
+		};
+		B2C102010100000000000000 /* CasePaths */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010100000000000000 /* XCRemoteSwiftPackageReference "swift-case-paths" */;
+			productName = CasePaths;
+		};
+		B2C102010200000000000000 /* Clocks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010200000000000000 /* XCRemoteSwiftPackageReference "swift-clocks" */;
+			productName = Clocks;
+		};
+		B2C102010300000000000000 /* Dependencies */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010300000000000000 /* XCRemoteSwiftPackageReference "swift-dependencies" */;
+			productName = Dependencies;
+		};
+		B2C102010400000000000000 /* IdentifiedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010400000000000000 /* XCRemoteSwiftPackageReference "swift-identified-collections" */;
+			productName = IdentifiedCollections;
+		};
+		B2C102010500000000000000 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010500000000000000 /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		B2C102010600000000000000 /* Perception */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B2C101010600000000000000 /* XCRemoteSwiftPackageReference "swift-perception" */;
+			productName = Perception;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

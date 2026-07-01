@@ -1,0 +1,240 @@
+[
+  {
+    "id": "11111111-0000-0000-0000-000000000001",
+    "name": "Овсянка с ягодами",
+    "cuisine": "home",
+    "emoji": "🥣",
+    "cookTimeMinutes": 10,
+    "calories": 320,
+    "proteinGrams": 12,
+    "rarity": "common",
+    "difficulty": "one",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🌾", "name": "Овсяные хлопья", "amount": "60 г" },
+      { "emoji": "🥛", "name": "Молоко",         "amount": "200 мл" },
+      { "emoji": "🫐", "name": "Ягоды",          "amount": "горсть" },
+      { "emoji": "🍯", "name": "Мёд",            "amount": "по вкусу" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Залить молоко",    "description": "Поставить кастрюлю на средний огонь, влить молоко.", "durationMinutes": 2 },
+      { "order": 2, "title": "Добавить хлопья",  "description": "Всыпать овсянку, помешивать.",                       "durationMinutes": 5 },
+      { "order": 3, "title": "Подать с ягодами", "description": "Выключить огонь, добавить ягоды и мёд.",             "durationMinutes": 2 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000002",
+    "name": "Сырники",
+    "cuisine": "home",
+    "emoji": "🥞",
+    "cookTimeMinutes": 25,
+    "calories": 420,
+    "proteinGrams": 22,
+    "rarity": "common",
+    "difficulty": "two",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🧀", "name": "Творог",   "amount": "300 г" },
+      { "emoji": "🥚", "name": "Яйцо",     "amount": "1 шт" },
+      { "emoji": "🌾", "name": "Мука",     "amount": "3 ст. л." },
+      { "emoji": "🍬", "name": "Сахар",    "amount": "2 ст. л." }
+    ],
+    "steps": [
+      { "order": 1, "title": "Замесить тесто", "description": "Смешать творог, яйцо, сахар и муку до однородности.", "durationMinutes": 5 },
+      { "order": 2, "title": "Сформировать",   "description": "Скатать шарики, обвалять в муке и приплюснуть.",      "durationMinutes": 5 },
+      { "order": 3, "title": "Обжарить",       "description": "На среднем огне до золотистой корочки с двух сторон.", "durationMinutes": 12 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000003",
+    "name": "Рамен с курицей",
+    "cuisine": "asian",
+    "emoji": "🍜",
+    "cookTimeMinutes": 35,
+    "calories": 540,
+    "proteinGrams": 32,
+    "rarity": "rare",
+    "difficulty": "two",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🍗", "name": "Куриное филе", "amount": "200 г" },
+      { "emoji": "🍜", "name": "Лапша рамен",  "amount": "100 г" },
+      { "emoji": "🥚", "name": "Яйцо",         "amount": "1 шт" },
+      { "emoji": "🧅", "name": "Зелёный лук",  "amount": "пучок" },
+      { "emoji": "🫛", "name": "Соевый соус",  "amount": "2 ст. л." }
+    ],
+    "steps": [
+      { "order": 1, "title": "Бульон",       "description": "Отварить курицу с луком и имбирём 20 минут.",              "durationMinutes": 20 },
+      { "order": 2, "title": "Лапша",        "description": "Отварить лапшу отдельно по инструкции.",                   "durationMinutes": 5 },
+      { "order": 3, "title": "Яйцо аджитама","description": "Сварить яйцо 7 минут, замариновать в соевом соусе.",        "durationMinutes": 7 },
+      { "order": 4, "title": "Собрать миску", "description": "В миску лапшу, бульон, нарезанную курицу, половинку яйца и лук.", "durationMinutes": 3 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000004",
+    "name": "Паста карбонара",
+    "cuisine": "italian",
+    "emoji": "🍝",
+    "cookTimeMinutes": 20,
+    "calories": 620,
+    "proteinGrams": 28,
+    "rarity": "rare",
+    "difficulty": "two",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🍝", "name": "Спагетти",   "amount": "200 г" },
+      { "emoji": "🥓", "name": "Гуанчале",   "amount": "100 г" },
+      { "emoji": "🥚", "name": "Желток",     "amount": "3 шт" },
+      { "emoji": "🧀", "name": "Пекорино",   "amount": "60 г" },
+      { "emoji": "🌶️", "name": "Чёрный перец","amount": "по вкусу" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Спагетти",  "description": "Отварить al dente в подсоленной воде.",                      "durationMinutes": 10 },
+      { "order": 2, "title": "Гуанчале",  "description": "Нарезать кубиками, обжарить до хрустящего состояния.",       "durationMinutes": 5 },
+      { "order": 3, "title": "Заправка",  "description": "Смешать желтки с тёртым пекорино и перцем.",                 "durationMinutes": 2 },
+      { "order": 4, "title": "Соединить", "description": "Снять пасту с огня, смешать с гуанчале и заправкой.",         "durationMinutes": 3 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000005",
+    "name": "Греческий салат",
+    "cuisine": "mediterranean",
+    "emoji": "🥗",
+    "cookTimeMinutes": 15,
+    "calories": 280,
+    "proteinGrams": 10,
+    "rarity": "common",
+    "difficulty": "one",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🍅", "name": "Помидоры",   "amount": "2 шт" },
+      { "emoji": "🥒", "name": "Огурец",     "amount": "1 шт" },
+      { "emoji": "🧀", "name": "Фета",       "amount": "100 г" },
+      { "emoji": "🫒", "name": "Маслины",    "amount": "горсть" },
+      { "emoji": "🫒", "name": "Оливковое масло","amount": "2 ст. л." }
+    ],
+    "steps": [
+      { "order": 1, "title": "Нарезать", "description": "Помидоры и огурец крупными кубиками.",            "durationMinutes": 5 },
+      { "order": 2, "title": "Собрать",  "description": "Смешать с маслинами, сверху положить кусок феты.", "durationMinutes": 3 },
+      { "order": 3, "title": "Заправить","description": "Полить оливковым маслом, посыпать орегано.",       "durationMinutes": 2 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000006",
+    "name": "Тако с курицей",
+    "cuisine": "mexican",
+    "emoji": "🌮",
+    "cookTimeMinutes": 30,
+    "calories": 480,
+    "proteinGrams": 30,
+    "rarity": "rare",
+    "difficulty": "two",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🍗", "name": "Куриное филе","amount": "300 г" },
+      { "emoji": "🫓", "name": "Тортильи",    "amount": "4 шт" },
+      { "emoji": "🥑", "name": "Авокадо",     "amount": "1 шт" },
+      { "emoji": "🌶️", "name": "Сальса",       "amount": "4 ст. л." }
+    ],
+    "steps": [
+      { "order": 1, "title": "Маринад",   "description": "Курицу замариновать в специях и лайме.",                "durationMinutes": 10 },
+      { "order": 2, "title": "Обжарить",  "description": "Жарить на сковороде до готовности, нарезать.",          "durationMinutes": 12 },
+      { "order": 3, "title": "Собрать",   "description": "На тортилью курицу, авокадо, сальсу. Свернуть.",        "durationMinutes": 5 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000007",
+    "name": "Круассан-сэндвич",
+    "cuisine": "french",
+    "emoji": "🥐",
+    "cookTimeMinutes": 12,
+    "calories": 510,
+    "proteinGrams": 18,
+    "rarity": "common",
+    "difficulty": "one",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🥐", "name": "Круассан",   "amount": "1 шт" },
+      { "emoji": "🥚", "name": "Яйцо",       "amount": "1 шт" },
+      { "emoji": "🧀", "name": "Сыр",        "amount": "30 г" },
+      { "emoji": "🥬", "name": "Зелень",     "amount": "по вкусу" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Разрезать",   "description": "Круассан вдоль, слегка подогреть.",   "durationMinutes": 3 },
+      { "order": 2, "title": "Яичница",     "description": "Пожарить яйцо в форме круга.",         "durationMinutes": 4 },
+      { "order": 3, "title": "Собрать",     "description": "Сыр, яйцо, зелень — закрыть.",         "durationMinutes": 2 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000008",
+    "name": "Боул с лососем",
+    "cuisine": "asian",
+    "emoji": "🍣",
+    "cookTimeMinutes": 25,
+    "calories": 560,
+    "proteinGrams": 36,
+    "rarity": "legendary",
+    "difficulty": "three",
+    "cardNumber": 3,
+    "ingredients": [
+      { "emoji": "🍣", "name": "Лосось",      "amount": "180 г" },
+      { "emoji": "🍚", "name": "Рис",         "amount": "150 г" },
+      { "emoji": "🥑", "name": "Авокадо",     "amount": "1/2 шт" },
+      { "emoji": "🥒", "name": "Огурец",      "amount": "1/2 шт" },
+      { "emoji": "🫛", "name": "Соевый соус", "amount": "2 ст. л." },
+      { "emoji": "🌱", "name": "Нори",        "amount": "1 лист" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Рис",     "description": "Отварить рис, заправить рисовым уксусом.",          "durationMinutes": 15 },
+      { "order": 2, "title": "Лосось",  "description": "Нарезать кубиками, замариновать в соевом соусе.",    "durationMinutes": 5 },
+      { "order": 3, "title": "Овощи",   "description": "Авокадо и огурец нарезать кубиками.",                "durationMinutes": 3 },
+      { "order": 4, "title": "Подача",  "description": "Выложить рис в чашу, сверху овощи, лосось и нори.",  "durationMinutes": 2 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000009",
+    "name": "Бёф бургиньон",
+    "cuisine": "french",
+    "emoji": "🍷",
+    "cookTimeMinutes": 180,
+    "calories": 720,
+    "proteinGrams": 44,
+    "rarity": "legendary",
+    "difficulty": "three",
+    "cardNumber": 4,
+    "ingredients": [
+      { "emoji": "🥩", "name": "Говядина",        "amount": "600 г" },
+      { "emoji": "🍷", "name": "Красное вино",    "amount": "500 мл" },
+      { "emoji": "🥕", "name": "Морковь",         "amount": "2 шт" },
+      { "emoji": "🧅", "name": "Лук",             "amount": "1 шт" },
+      { "emoji": "🍄", "name": "Шампиньоны",      "amount": "200 г" },
+      { "emoji": "🌿", "name": "Букет гарни",     "amount": "1 шт" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Обжарить мясо",  "description": "Говядину обжарить со всех сторон до корочки.",      "durationMinutes": 10 },
+      { "order": 2, "title": "Овощи",          "description": "Добавить лук и морковь, обжарить.",                  "durationMinutes": 8 },
+      { "order": 3, "title": "Тушить в вине",  "description": "Залить вином с букетом гарни, тушить 2.5 часа.",     "durationMinutes": 150 },
+      { "order": 4, "title": "Грибы",          "description": "За 15 минут до конца добавить обжаренные шампиньоны.","durationMinutes": 12 }
+    ]
+  },
+  {
+    "id": "11111111-0000-0000-0000-000000000010",
+    "name": "Йогурт с гранолой",
+    "cuisine": "home",
+    "emoji": "🥛",
+    "cookTimeMinutes": 3,
+    "calories": 260,
+    "proteinGrams": 14,
+    "rarity": "common",
+    "difficulty": "one",
+    "cardNumber": null,
+    "ingredients": [
+      { "emoji": "🥛", "name": "Йогурт",   "amount": "200 г" },
+      { "emoji": "🌾", "name": "Гранола", "amount": "50 г" },
+      { "emoji": "🍓", "name": "Клубника","amount": "100 г" }
+    ],
+    "steps": [
+      { "order": 1, "title": "Собрать", "description": "Йогурт в чашу, сверху гранола, клубника. Готово.", "durationMinutes": 3 }
+    ]
+  }
+]
