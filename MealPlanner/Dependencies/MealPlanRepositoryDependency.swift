@@ -5,7 +5,9 @@ extension MealPlanRepository: DependencyKey {
     /// подключается в `MealPlannerApp` через `.dependency(\.mealPlanRepository, .live(container:))`.
     public static let liveValue:    MealPlanRepository = .preview
     public static let previewValue: MealPlanRepository = .preview
-    public static let testValue:    MealPlanRepository = .unimplemented
+    /// In-memory для тестов — избегаем краша app-под-test-host на unimplemented.
+    /// Специфичные тесты переопределяют через `withDependencies`.
+    public static let testValue:    MealPlanRepository = .preview
 }
 
 extension DependencyValues {

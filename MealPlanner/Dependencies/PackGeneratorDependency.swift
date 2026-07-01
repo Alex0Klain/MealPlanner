@@ -3,7 +3,10 @@ import ComposableArchitecture
 extension PackGenerator: DependencyKey {
     public static let liveValue:    PackGenerator = .live
     public static let previewValue: PackGenerator = .live
-    public static let testValue:    PackGenerator = .unimplemented
+    /// В тестах используем настоящий генератор, чтобы app-под-test-host
+    /// не крашился. Тесты, которым нужен детерминизм, подменяют dependency
+    /// на `.seeded(_)` через `withDependencies`.
+    public static let testValue:    PackGenerator = .live
 }
 
 extension DependencyValues {

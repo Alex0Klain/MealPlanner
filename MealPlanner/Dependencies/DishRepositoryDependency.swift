@@ -3,7 +3,10 @@ import ComposableArchitecture
 extension DishRepository: DependencyKey {
     public static let liveValue:    DishRepository = .live
     public static let previewValue: DishRepository = .preview
-    public static let testValue:    DishRepository = .unimplemented
+    /// Тестовые прогоны используют in-memory каталог, чтобы приложение
+    /// как test host могло стартовать без crash в `unimplemented`.
+    /// Специфичные тесты подменяют dependency через `withDependencies`.
+    public static let testValue:    DishRepository = .preview
 }
 
 extension DependencyValues {
