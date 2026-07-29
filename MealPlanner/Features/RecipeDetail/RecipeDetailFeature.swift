@@ -6,8 +6,12 @@ public struct RecipeDetailFeature {
     @ObservableState
     public struct State: Equatable {
         public var dish: Dish
-        public var mode: Mode = .overview
+        /// Активная вкладка сегмент-контрола: Ингредиенты / Шаги.
+        public var mode: Mode = .ingredients
+        /// true после «Начать готовить» — компактный hero, прогресс, таймер.
+        public var isCooking: Bool = false
         public var activeStepIndex: Int = 0
+        public var completedSteps: Set<Int> = []
         public var remainingSeconds: Int = 0
         public var isTimerRunning: Bool = false
 
@@ -16,16 +20,38 @@ public struct RecipeDetailFeature {
         }
 
         public enum Mode: Equatable {
-            case overview
-            case stepByStep
+            case ingredients
+            case steps
+        }
+
+        public var allStepsCompleted: Bool {
+            !dish.steps.isEmpty && completedSteps.count == dish.steps.count
+        }
+
+        public var activeStep: RecipeStep? {
+            dish.steps.indices.contains(activeStepIndex) ? dish.steps[activeStepIndex] : nil
+        }
+
+        /// Прошедшее время по завершённым шагам, минуты.
+        public var minutesPassed: Int {
+            dish.steps
+                .enumerated()
+                .filter { completedSteps.contains($0.offset) }
+                .compactMap(\.element.durationMinutes)
+                .reduce(0, +)
+        }
+
+        public var progressFraction: Double {
+            guard !dish.steps.isEmpty else { return 0 }
+            return Double(completedSteps.count) / Double(dish.steps.count)
         }
     }
 
     public enum Action: Equatable {
+        case modeChanged(State.Mode)
         case startCookingTapped
-        case backToOverviewTapped
-        case nextStepTapped
-        case previousStepTapped
+        case stepTapped(Int)
+        case completeStepTapped
         case timerToggled
         case timerTicked
         case closeTapped
@@ -45,40 +71,33 @@ public struct RecipeDetailFeature {
     public var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
-            case .startCookingTapped:
-                state.mode = .stepByStep
-                state.activeStepIndex = 0
-                state.remainingSeconds = (state.dish.steps.first?.durationMinutes ?? 0) * 60
+            case let .modeChanged(mode):
+                state.mode = mode
                 return .none
 
-            case .backToOverviewTapped:
-                state.mode = .overview
-                state.isTimerRunning = false
-                return .cancel(id: CancelID.timer)
+            case .startCookingTapped:
+                state.isCooking = true
+                state.mode = .steps
+                state.completedSteps = []
+                return activate(step: firstIncompleteIndex(state), state: &state)
 
-            case .nextStepTapped:
-                guard state.activeStepIndex + 1 < state.dish.steps.count else { return .none }
-                state.activeStepIndex += 1
-                state.remainingSeconds = (state.dish.steps[state.activeStepIndex].durationMinutes ?? 0) * 60
-                state.isTimerRunning = false
-                return .cancel(id: CancelID.timer)
+            case let .stepTapped(index):
+                guard state.isCooking, state.dish.steps.indices.contains(index) else { return .none }
+                return activate(step: index, state: &state)
 
-            case .previousStepTapped:
-                guard state.activeStepIndex > 0 else { return .none }
-                state.activeStepIndex -= 1
-                state.remainingSeconds = (state.dish.steps[state.activeStepIndex].durationMinutes ?? 0) * 60
+            case .completeStepTapped:
+                guard state.isCooking else { return .none }
+                state.completedSteps.insert(state.activeStepIndex)
+                if let next = firstIncompleteIndex(state) {
+                    return activate(step: next, state: &state)
+                }
                 state.isTimerRunning = false
                 return .cancel(id: CancelID.timer)
 
             case .timerToggled:
                 state.isTimerRunning.toggle()
                 if state.isTimerRunning {
-                    return .run { [clock] send in
-                        for await _ in clock.timer(interval: .seconds(1)) {
-                            await send(.timerTicked)
-                        }
-                    }
-                    .cancellable(id: CancelID.timer, cancelInFlight: true)
+                    return startTimer()
                 } else {
                     return .cancel(id: CancelID.timer)
                 }
@@ -101,5 +120,33 @@ public struct RecipeDetailFeature {
                 return .none
             }
         }
+    }
+
+    // MARK: - Helpers
+
+    private func firstIncompleteIndex(_ state: State) -> Int? {
+        state.dish.steps.indices.first { !state.completedSteps.contains($0) }
+    }
+
+    /// Делает шаг активным; если у шага есть таймер — сразу запускает его.
+    private func activate(step index: Int?, state: inout State) -> Effect<Action> {
+        guard let index else {
+            state.isTimerRunning = false
+            return .cancel(id: CancelID.timer)
+        }
+        state.activeStepIndex = index
+        let duration = state.dish.steps[index].durationMinutes ?? 0
+        state.remainingSeconds = duration * 60
+        state.isTimerRunning = duration > 0
+        return duration > 0 ? startTimer() : .cancel(id: CancelID.timer)
+    }
+
+    private func startTimer() -> Effect<Action> {
+        .run { [clock] send in
+            for await _ in clock.timer(interval: .seconds(1)) {
+                await send(.timerTicked)
+            }
+        }
+        .cancellable(id: CancelID.timer, cancelInFlight: true)
     }
 }

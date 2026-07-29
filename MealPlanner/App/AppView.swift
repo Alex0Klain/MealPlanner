@@ -12,7 +12,8 @@ public struct AppView: View {
         TabView(selection: $store.selectedTab.sending(\.tabChanged)) {
             HomeView(store: store.scope(state: \.home, action: \.home))
                 .tabItem {
-                    Label("Сегодня", systemImage: "sparkles")
+                    // Дизайн задаёт 🃏 — ближайший SF-символ «стопки карт».
+                    Label("Сегодня", systemImage: "rectangle.portrait.on.rectangle.portrait.angled")
                 }
                 .tag(AppFeature.Tab.today)
 

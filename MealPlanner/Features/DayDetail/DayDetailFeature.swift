@@ -20,6 +20,9 @@ public struct DayDetailFeature {
         case onAppear
         case planLoaded(DayPlanSnapshot)
         case dishesLoaded([Dish])
+        case previousDayTapped
+        case nextDayTapped
+        case packCtaTapped
         case slotTapped(MealSlot)
         case mealTapped(PlannedMeal)
         case removeMealTapped(PlannedMeal)
@@ -28,6 +31,7 @@ public struct DayDetailFeature {
 
     @Reducer(state: .equatable, action: .equatable)
     public enum Destination {
+        case packOpening(PackOpeningFeature)
         case addMealSlot(AddMealSlotFeature)
         case recipeDetail(RecipeDetailFeature)
     }
@@ -60,6 +64,21 @@ public struct DayDetailFeature {
                 )
                 return .none
 
+            case .previousDayTapped:
+                return shiftDay(by: -1, state: &state)
+
+            case .nextDayTapped:
+                return shiftDay(by: 1, state: &state)
+
+            case .packCtaTapped:
+                state.destination = .packOpening(
+                    PackOpeningFeature.State(
+                        date: state.date,
+                        alreadyInPlanIDs: Set(state.plan.meals.map(\.dishID))
+                    )
+                )
+                return .none
+
             case let .slotTapped(slot):
                 state.destination = .addMealSlot(
                     AddMealSlotFeature.State(date: state.date, selectedSlot: slot)
@@ -78,6 +97,21 @@ public struct DayDetailFeature {
                     let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
                     await send(.planLoaded(plan))
                 }
+
+            case let .destination(.presented(.packOpening(.delegate(.finished(meals))))):
+                state.destination = nil
+                let date = state.date
+                return .run { [mealPlanRepository] send in
+                    for meal in meals {
+                        try? await mealPlanRepository.addMeal(meal.dishID, meal.slot, date)
+                    }
+                    let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+                    await send(.planLoaded(plan))
+                }
+
+            case .destination(.presented(.packOpening(.delegate(.dismiss)))):
+                state.destination = nil
+                return .none
 
             case let .destination(.presented(.addMealSlot(.delegate(.picked(dish, slot))))):
                 state.destination = nil
@@ -101,5 +135,19 @@ public struct DayDetailFeature {
             }
         }
         .ifLet(\.$destination, action: \.destination)
+    }
+
+    /// Свайп/стрелки по дням: меняем дату и перечитываем план.
+    private func shiftDay(by offset: Int, state: inout State) -> Effect<Action> {
+        guard let newDate = Calendar.current.date(byAdding: .day, value: offset, to: state.date) else {
+            return .none
+        }
+        state.date = Calendar.current.startOfDay(for: newDate)
+        state.plan = DayPlanSnapshot(date: newDate)
+        let date = state.date
+        return .run { [mealPlanRepository] send in
+            let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+            await send(.planLoaded(plan))
+        }
     }
 }
