@@ -48,20 +48,7 @@ public struct DishCard: View {
     // MARK: layers
 
     private var background: some View {
-        ZStack {
-            LinearGradient(
-                colors: [
-                    dish.cuisine.accentColor.opacity(0.55),
-                    Color.inkSurface,
-                    Color.inkBase
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            Text(dish.emoji)
-                .font(.system(size: 52))
-                .offset(y: -14)
-        }
+        DishPhoto(dish: dish, emojiSize: 52)
     }
 
     /// Градиент затемнения сверху и снизу — читаемость chips и текста.

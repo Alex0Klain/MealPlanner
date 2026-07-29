@@ -57,6 +57,7 @@ public struct RecipeDetailFeature {
         case closeTapped
         case delegate(Delegate)
 
+        @CasePathable
         public enum Delegate: Equatable {
             case dismiss
         }

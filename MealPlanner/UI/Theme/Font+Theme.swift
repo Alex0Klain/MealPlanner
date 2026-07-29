@@ -17,6 +17,11 @@ extension Font {
     }
 }
 
+/// Интерфейс приложения — русский; даты не должны зависеть от локали системы.
+extension Locale {
+    static let appRU = Locale(identifier: "ru_RU")
+}
+
 /// Секционный caption из дизайна: MONO · UPPERCASE · РАЗРЯДКА.
 struct MonoCaption: View {
     let text: String

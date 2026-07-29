@@ -2,6 +2,11 @@ import SwiftUI
 
 /// Glow вокруг карточки в зависимости от редкости.
 /// Common — без свечения; Rare — синий пульс; Legendary — золотое сияние.
+///
+/// `compositingGroup()` обязателен: без него `.shadow` рисует свечение
+/// вокруг каждого вложенного слоя (chips, текст, material) и выглядит
+/// «кривым». С группой контент схлопывается в один слой, и тень идёт
+/// по внешнему контуру карточки.
 public struct RarityGlowModifier: ViewModifier {
     public let rarity: Rarity
 
@@ -9,6 +14,7 @@ public struct RarityGlowModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
+            .compositingGroup()
             .shadow(color: glowColor.opacity(pulse ? 0.7 : 0.35),
                     radius: glowRadius,
                     x: 0, y: 0)
