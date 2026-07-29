@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Пустой слот из дизайна: dashed-рамка, «+»-плитка 28×28,
+/// caption слота и подсказка «Открой пак».
 public struct EmptySlotView: View {
     public let slot: MealSlot
     public var onAdd: () -> Void = {}
@@ -11,32 +13,46 @@ public struct EmptySlotView: View {
 
     public var body: some View {
         Button(action: onAdd) {
-            HStack(spacing: Spacing.md) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                    .foregroundStyle(slot.accentColor)
-                VStack(alignment: .leading, spacing: Spacing.xs) {
-                    Text(slot.displayName)
-                        .font(.cardName)
-                        .foregroundStyle(Color.inkText)
-                    Text("Добавить блюдо")
-                        .font(.captionM)
+            HStack(spacing: 10) {
+                plusTile
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(slot.displayName.uppercased())
+                        .font(.mono(9))
+                        .kerning(1.1)
                         .foregroundStyle(Color.inkMuted)
+                    Text("Открой пак")
+                        .font(.system(size: 12, weight: .semibold, design: .rounded))
+                        .foregroundStyle(Color.inkText.opacity(0.75))
                 }
-                Spacer()
+                Spacer(minLength: 0)
             }
-            .padding(Spacing.md)
-            .frame(maxWidth: .infinity, minHeight: 64, alignment: .leading)
-            .background(
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .overlay(
                 RoundedRectangle(cornerRadius: Radius.slot, style: .continuous)
-                    .strokeBorder(
-                        style: StrokeStyle(lineWidth: 1.5, dash: [6, 4])
-                    )
-                    .foregroundStyle(slot.accentColor.opacity(0.5))
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [6, 4]))
+                    .foregroundStyle(Color.inkRaised)
             )
+            .contentShape(RoundedRectangle(cornerRadius: Radius.slot, style: .continuous))
         }
-        .buttonStyle(.plain)
         .pressScale()
+    }
+
+    private var plusTile: some View {
+        Text("+")
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(slot.accentColor)
+            .frame(width: 28, height: 28)
+            .background(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .fill(slot.accentColor.opacity(0.18))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [3, 3]))
+                    .foregroundStyle(slot.accentColor.opacity(0.6))
+            )
     }
 }
 

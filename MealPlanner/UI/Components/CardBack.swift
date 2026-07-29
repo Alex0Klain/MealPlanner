@@ -1,47 +1,33 @@
 import SwiftUI
 
-/// Рубашка пака — стопка из 3 наклонённых карт.
+/// Рубашка карты: plasma-градиент, dashed-рамка, вилка по центру.
+/// Размер задаёт контейнер (пропорция 7:10) — используется в flip-анимации reveal.
 public struct CardBack: View {
-    public var size: CGSize = .init(width: 109, height: 156)
-
-    public init(size: CGSize = .init(width: 109, height: 156)) {
-        self.size = size
-    }
+    public init() {}
 
     public var body: some View {
-        ZStack {
-            backFace
-                .rotationEffect(.degrees(-6))
-                .offset(x: -8, y: 6)
-                .opacity(0.6)
-            backFace
-                .rotationEffect(.degrees(4))
-                .offset(x: 6, y: 2)
-                .opacity(0.8)
-            backFace
-        }
-        .frame(width: size.width + 24, height: size.height + 16)
-    }
-
-    private var backFace: some View {
-        RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
             .fill(LinearGradient.plasmaCta)
             .overlay(
-                RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+                RoundedRectangle(cornerRadius: 9, style: .continuous)
                     .strokeBorder(style: StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
                     .foregroundStyle(Color.inkText.opacity(0.4))
-                    .padding(6)
+                    .padding(5)
             )
             .overlay(
-                Text("🍴")
-                    .font(.system(size: 42))
+                Text("🍴").font(.system(size: 34))
             )
-            .frame(width: size.width, height: size.height)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(Color.plasma.opacity(0.7), lineWidth: 1)
+            )
+            .aspectRatio(7.0 / 10.0, contentMode: .fit)
     }
 }
 
 #Preview {
     CardBack()
+        .frame(width: 109)
         .padding()
         .background(Color.inkCanvas)
 }

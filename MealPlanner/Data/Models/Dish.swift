@@ -43,15 +43,30 @@ public struct Dish: Identifiable, Codable, Sendable, Hashable {
     }
 }
 
-public struct Ingredient: Codable, Sendable, Hashable {
+public struct Ingredient: Codable, Sendable, Hashable, Identifiable {
+    public let id: UUID
     public let emoji: String
     public let name: String
     public let amount: String
 
     public init(emoji: String, name: String, amount: String) {
+        self.id = UUID()
         self.emoji = emoji
         self.name = name
         self.amount = amount
+    }
+
+    // id — только для identity в UI, в dishes.json его нет.
+    private enum CodingKeys: String, CodingKey {
+        case emoji, name, amount
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = UUID()
+        self.emoji = try container.decode(String.self, forKey: .emoji)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.amount = try container.decode(String.self, forKey: .amount)
     }
 }
 

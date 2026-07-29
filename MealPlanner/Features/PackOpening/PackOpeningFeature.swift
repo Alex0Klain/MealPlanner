@@ -12,6 +12,8 @@ public struct PackOpeningFeature {
         public var date: Date
         public var alreadyInPlanIDs: Set<Dish.ID> = []
         public var distribution: [Dish.ID: MealSlot] = [:]
+        /// Карточка, для которой сейчас выбирается слот на шаге Distribute.
+        public var activeDistributionID: Dish.ID?
 
         public init(date: Date, alreadyInPlanIDs: Set<Dish.ID> = []) {
             self.date = date
@@ -27,8 +29,17 @@ public struct PackOpeningFeature {
             selectedIDs.allSatisfy { distribution[$0] != nil }
         }
 
+        /// Выбранные карточки в порядке раскладки (revealIndex).
         public var selectedCards: [PackCard] {
             cards.filter { selectedIDs.contains($0.id) }
+        }
+
+        public var unassignedCount: Int {
+            selectedIDs.count { distribution[$0] == nil }
+        }
+
+        var firstUnassignedID: Dish.ID? {
+            selectedCards.first { distribution[$0.id] == nil }?.id
         }
     }
 
@@ -45,8 +56,12 @@ public struct PackOpeningFeature {
         case packTapped
         case burstFinished
         case cardTapped(Dish.ID)
+        case rerollTapped
         case confirmRevealTapped
+        case backToRevealTapped
+        case distributionCardTapped(Dish.ID)
         case slotAssigned(Dish.ID, MealSlot)
+        case autoAssignTapped
         case confirmDistributionTapped
         case closeTapped
         case delegate(Delegate)
@@ -90,7 +105,7 @@ public struct PackOpeningFeature {
                 guard state.phase == .closed else { return .none }
                 state.phase = .burst
                 return .run { [clock] send in
-                    try await clock.sleep(for: .milliseconds(800))
+                    try await clock.sleep(for: .milliseconds(500))
                     await send(.burstFinished)
                 }
 
@@ -113,13 +128,57 @@ public struct PackOpeningFeature {
                 }
                 return .none
 
+            case .rerollTapped:
+                // «Ещё пак»: короткий re-burst и новая девятка карточек.
+                guard state.phase == .reveal else { return .none }
+                state.phase = .burst
+                state.selectedIDs = []
+                state.distribution = [:]
+                state.activeDistributionID = nil
+                return .run { [dishRepository, packGenerator, clock] send in
+                    let allDishes = (try? await dishRepository.all()) ?? []
+                    let pack = packGenerator.generate(9, allDishes)
+                    await send(.packLoaded(pack))
+                    try await clock.sleep(for: .milliseconds(500))
+                    await send(.burstFinished)
+                }
+
             case .confirmRevealTapped:
                 guard state.canConfirmReveal else { return .none }
                 state.phase = .distribute
+                state.activeDistributionID = state.firstUnassignedID
+                return .none
+
+            case .backToRevealTapped:
+                guard state.phase == .distribute else { return .none }
+                state.phase = .reveal
+                return .none
+
+            case let .distributionCardTapped(dishID):
+                guard state.selectedIDs.contains(dishID) else { return .none }
+                state.activeDistributionID = dishID
                 return .none
 
             case let .slotAssigned(dishID, slot):
                 state.distribution[dishID] = slot
+                state.activeDistributionID = state.firstUnassignedID
+                return .none
+
+            case .autoAssignTapped:
+                // Нераспределённые карточки раскладываем по слотам:
+                // сначала свободные слоты в каноничном порядке, дальше по кругу.
+                let usedSlots = Set(state.distribution.values)
+                var queue = MealSlot.displayOrder.filter { !usedSlots.contains($0) }
+                var cycle = 0
+                for card in state.selectedCards where state.distribution[card.id] == nil {
+                    if queue.isEmpty {
+                        let order = MealSlot.displayOrder
+                        queue.append(order[cycle % order.count])
+                        cycle += 1
+                    }
+                    state.distribution[card.id] = queue.removeFirst()
+                }
+                state.activeDistributionID = nil
                 return .none
 
             case .confirmDistributionTapped:

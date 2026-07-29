@@ -1,6 +1,10 @@
 import ComposableArchitecture
 import SwiftUI
 
+/// Экраны 05a/05b из дизайна: карточка рецепта.
+/// Обзор: hero 16:10 с glass-chips → stats-плитки → сегменты → ингредиенты →
+/// «Начать готовить». Готовка: компактный hero, progress bar, список шагов
+/// (done / active с таймером / upcoming), «⏸ / Завершить шаг ›».
 public struct RecipeDetailView: View {
     @Bindable public var store: StoreOf<RecipeDetailFeature>
 
@@ -9,175 +13,561 @@ public struct RecipeDetailView: View {
     }
 
     public var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.inkCanvas.ignoresSafeArea()
-                content
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Закрыть") { store.send(.closeTapped) }
-                        .foregroundStyle(Color.plasma)
-                }
-                if store.mode == .stepByStep {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            store.send(.backToOverviewTapped)
-                        } label: {
-                            Image(systemName: "chevron.left")
-                        }
-                        .foregroundStyle(Color.plasma)
-                    }
-                }
-            }
-            .navigationTitle(store.dish.name)
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-
-    @ViewBuilder
-    private var content: some View {
-        switch store.mode {
-        case .overview:   overview
-        case .stepByStep: stepByStep
-        }
-    }
-
-    private var overview: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.lg) {
-                heroBanner
-                statsRow
-                ingredientsSection
-                Button {
-                    store.send(.startCookingTapped)
-                } label: {
-                    Text("Начать готовить")
-                        .font(.cardName)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Spacing.md)
-                        .background(LinearGradient.plasmaCta)
-                        .foregroundStyle(Color.inkText)
-                        .clipShape(RoundedRectangle(cornerRadius: Radius.button))
-                }
-                .padding(.top, Spacing.md)
-            }
-            .padding(Spacing.lg)
-        }
-    }
-
-    private var heroBanner: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
-                .fill(LinearGradient(
-                    colors: [store.dish.cuisine.accentColor.opacity(0.4), Color.inkSurface],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
-            Text(store.dish.emoji).font(.system(size: 100))
-        }
-        .frame(height: 220)
-    }
-
-    private var statsRow: some View {
-        HStack(spacing: Spacing.md) {
-            statTile(title: "Время", value: "\(store.dish.cookTimeMinutes) мин")
-            statTile(title: "Ккал",  value: "\(store.dish.calories)")
-            statTile(title: "Белок", value: "\(store.dish.proteinGrams) г")
-            statTile(title: "Сложность", value: store.dish.difficulty.stars)
-        }
-    }
-
-    private func statTile(title: String, value: String) -> some View {
-        VStack(spacing: Spacing.xs) {
-            Text(value).font(.cardName).foregroundStyle(Color.inkText)
-            Text(title).font(.captionM).foregroundStyle(Color.inkMuted)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, Spacing.sm)
-        .background(
-            RoundedRectangle(cornerRadius: Radius.slot, style: .continuous)
-                .fill(Color.inkSurface)
-        )
-    }
-
-    private var ingredientsSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            Text("Ингредиенты").font(.appTitle).foregroundStyle(Color.inkText)
-            ForEach(Array(store.dish.ingredients.enumerated()), id: \.offset) { _, ingredient in
-                HStack(spacing: Spacing.sm) {
-                    Text(ingredient.emoji).font(.title3)
-                    Text(ingredient.name).font(.bodyM).foregroundStyle(Color.inkText)
-                    Spacer()
-                    Text(ingredient.amount).font(.bodyM).foregroundStyle(Color.inkMuted)
-                }
-                .padding(.vertical, Spacing.xs)
-            }
-        }
-    }
-
-    private var stepByStep: some View {
-        let step = store.dish.steps[safe: store.activeStepIndex]
-        return VStack(spacing: Spacing.lg) {
-            if let step {
-                Text("Шаг \(step.order) из \(store.dish.steps.count)")
-                    .font(.captionM)
-                    .foregroundStyle(Color.inkMuted)
-                Text(step.title)
-                    .font(.appTitle)
-                    .foregroundStyle(Color.inkText)
-                    .multilineTextAlignment(.center)
-                Text(step.description)
-                    .font(.bodyM)
-                    .foregroundStyle(Color.inkText.opacity(0.85))
-                    .multilineTextAlignment(.center)
-                if let duration = step.durationMinutes, duration > 0 {
-                    CircularStepTimer(
-                        progress: timerProgress(total: duration * 60),
-                        remainingSeconds: store.remainingSeconds
-                    )
-                    .frame(width: 180, height: 180)
-                    Button {
-                        store.send(.timerToggled)
-                    } label: {
-                        Text(store.isTimerRunning ? "Пауза" : "Старт")
-                            .font(.cardName)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, Spacing.md)
-                            .background(LinearGradient.plasmaCta)
-                            .foregroundStyle(Color.inkText)
-                            .clipShape(RoundedRectangle(cornerRadius: Radius.button))
+            Color.inkCanvas.ignoresSafeArea()
+            VStack(spacing: 0) {
+                navBar
+                ScrollView {
+                    VStack(spacing: Spacing.md) {
+                        if store.isCooking {
+                            compactHero
+                            progressBar
+                        } else {
+                            hero
+                        }
+                        statsRow
+                        segmented
+                        switch store.mode {
+                        case .ingredients: ingredientsList
+                        case .steps:       stepsList
+                        }
                     }
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.bottom, 130)
+                }
+            }
+            bottomBar
+        }
+    }
+
+    // MARK: nav
+
+    private var navBar: some View {
+        HStack {
+            CircleIconButton(systemName: store.isCooking ? "chevron.left" : "xmark") {
+                store.send(.closeTapped)
+            }
+            Spacer()
+            VStack(spacing: 1) {
+                if store.isCooking {
+                    MonoCaption(store.dish.name, size: 10)
+                    Text("Шаг \(min(store.activeStepIndex + 1, store.dish.steps.count)) из \(store.dish.steps.count)")
+                        .font(.system(size: 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.inkText)
+                } else {
+                    MonoCaption(recipeCode, size: 11)
                 }
             }
             Spacer()
-            HStack(spacing: Spacing.md) {
-                Button("Назад") { store.send(.previousStepTapped) }
-                    .disabled(store.activeStepIndex == 0)
-                Spacer()
-                Button("Дальше") { store.send(.nextStepTapped) }
-                    .disabled(store.activeStepIndex >= store.dish.steps.count - 1)
-            }
-            .foregroundStyle(Color.plasma)
+            Color.clear.frame(width: 36, height: 36)
         }
-        .padding(Spacing.lg)
+        .padding(.horizontal, Spacing.lg)
+        .padding(.vertical, Spacing.xs)
     }
 
-    private func timerProgress(total: Int) -> Double {
-        guard total > 0 else { return 0 }
-        return Double(total - store.remainingSeconds) / Double(total)
+    private var recipeCode: String {
+        if let number = store.dish.cardNumber {
+            "Recipe · \(String(format: "%03d", number))"
+        } else {
+            "Recipe"
+        }
     }
-}
 
-private extension Array {
-    subscript(safe index: Int) -> Element? {
-        indices.contains(index) ? self[index] : nil
+    // MARK: hero
+
+    private var hero: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    store.dish.cuisine.accentColor.opacity(0.55),
+                    Color.inkSurface,
+                    Color.inkBase
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            Text(store.dish.emoji).font(.system(size: 96))
+            LinearGradient(
+                stops: [
+                    .init(color: .black.opacity(0.25), location: 0),
+                    .init(color: .clear, location: 0.3),
+                    .init(color: .clear, location: 0.5),
+                    .init(color: .black.opacity(0.85), location: 1)
+                ],
+                startPoint: .top, endPoint: .bottom
+            )
+            heroChips
+        }
+        .aspectRatio(16.0 / 10.0, contentMode: .fit)
+        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(store.dish.rarity.borderColor, lineWidth: 1.5)
+        )
+        .rarityGlow(store.dish.rarity)
+    }
+
+    private var heroChips: some View {
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
+                rarityBadge
+                Spacer()
+                Text(store.dish.difficulty.stars)
+                    .font(.mono(10, weight: .medium))
+                    .foregroundStyle(Color.rarityLegendary)
+                    .padding(.horizontal, 7)
+                    .padding(.vertical, 4)
+                    .background(RoundedRectangle(cornerRadius: 6).fill(.ultraThinMaterial))
+            }
+            Spacer()
+            CuisineChip(cuisine: store.dish.cuisine)
+            Text(store.dish.name)
+                .font(.system(size: 22, weight: .heavy, design: .rounded))
+                .foregroundStyle(
+                    store.dish.rarity == .legendary ? Color.rarityLegendary : Color.inkText
+                )
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .padding(.top, 2)
+        }
+        .padding(10)
+    }
+
+    private var rarityBadge: some View {
+        Text(rarityBadgeText)
+            .font(.mono(10))
+            .kerning(1.4)
+            .foregroundStyle(
+                store.dish.rarity == .common ? Color.inkText : store.dish.rarity.borderColor
+            )
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(RoundedRectangle(cornerRadius: 6).fill(.ultraThinMaterial))
+            .overlay(
+                RoundedRectangle(cornerRadius: 6)
+                    .stroke(store.dish.rarity.borderColor.opacity(0.8), lineWidth: 1)
+            )
+    }
+
+    private var rarityBadgeText: String {
+        let letter = switch store.dish.rarity {
+        case .common:    "C"
+        case .rare:      "R"
+        case .legendary: "★ L"
+        }
+        if let number = store.dish.cardNumber {
+            return "\(letter) · \(String(format: "%03d", number)) / 100"
+        }
+        return letter
+    }
+
+    private var compactHero: some View {
+        ZStack(alignment: .leading) {
+            LinearGradient(
+                colors: [store.dish.cuisine.accentColor.opacity(0.5), Color.inkSurface],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(store.dish.name)
+                        .font(.system(size: 18, weight: .heavy, design: .rounded))
+                        .foregroundStyle(
+                            store.dish.rarity == .legendary ? Color.rarityLegendary : Color.inkText
+                        )
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.8)
+                    Text("⏱ \(store.dish.cookTimeMinutes)м  🔥 \(store.dish.calories)  \(store.dish.difficulty.stars)")
+                        .font(.mono(10, weight: .medium))
+                        .foregroundStyle(Color.inkText.opacity(0.85))
+                }
+                .padding(.leading, 14)
+                Spacer()
+                Text(store.dish.emoji)
+                    .font(.system(size: 44))
+                    .padding(.trailing, 14)
+            }
+        }
+        .frame(height: 100)
+        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .stroke(store.dish.rarity.borderColor, lineWidth: 1.5)
+        )
+    }
+
+    private var progressBar: some View {
+        VStack(spacing: 6) {
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.inkRaised)
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [.plasma, .aqua],
+                                startPoint: .leading, endPoint: .trailing
+                            )
+                        )
+                        .frame(width: max(6, proxy.size.width * store.progressFraction))
+                        .animation(.smooth, value: store.progressFraction)
+                }
+            }
+            .frame(height: 6)
+            HStack {
+                Text("\(Int(store.progressFraction * 100))% · \(store.minutesPassed)м прошло")
+                Spacer()
+                Text("\(max(0, store.dish.cookTimeMinutes - store.minutesPassed))м осталось")
+            }
+            .font(.mono(10, weight: .medium))
+            .foregroundStyle(Color.inkMuted)
+        }
+    }
+
+    // MARK: stats
+
+    private var statsRow: some View {
+        HStack(spacing: Spacing.sm) {
+            statTile(value: "\(store.dish.cookTimeMinutes)", unit: "мин", title: "Время")
+            statTile(value: "\(store.dish.calories)", title: "Ккал")
+            statTile(value: "\(store.dish.ingredients.count)", title: "Ингр.")
+            statTile(value: store.dish.difficulty.stars, title: "Слож.", tint: .rarityLegendary)
+        }
+    }
+
+    private func statTile(value: String, unit: String? = nil, title: String, tint: Color = .inkText) -> some View {
+        VStack(spacing: 2) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(value)
+                    .font(.mono(16))
+                    .foregroundStyle(tint)
+                if let unit {
+                    Text(unit)
+                        .font(.mono(9, weight: .medium))
+                        .foregroundStyle(Color.inkMuted)
+                }
+            }
+            MonoCaption(title, size: 9)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.inkSurface)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.inkRaised, lineWidth: 1)
+        )
+    }
+
+    // MARK: segmented
+
+    private var segmented: some View {
+        HStack(spacing: 2) {
+            segment("Ингредиенты · \(store.dish.ingredients.count)", mode: .ingredients)
+            segment("Шаги · \(store.dish.steps.count)", mode: .steps)
+        }
+        .padding(3)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color.inkCanvas)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(Color.inkRaised, lineWidth: 1)
+        )
+    }
+
+    private func segment(_ label: String, mode: RecipeDetailFeature.State.Mode) -> some View {
+        let isActive = store.mode == mode
+        return Button {
+            store.send(.modeChanged(mode), animation: .snappy)
+        } label: {
+            Text(label)
+                .font(.system(size: 12, weight: isActive ? .bold : .regular))
+                .foregroundStyle(isActive ? Color.inkText : Color.inkMuted)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                        .fill(isActive ? Color.inkRaised : .clear)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: ingredients
+
+    private var ingredientsList: some View {
+        VStack(spacing: 0) {
+            ForEach(store.dish.ingredients) { ingredient in
+                HStack(spacing: 10) {
+                    Text(ingredient.emoji)
+                        .font(.system(size: 13))
+                        .frame(width: 26, height: 26)
+                        .background(
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .fill(Color.inkSurface)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 7, style: .continuous)
+                                .stroke(Color.inkRaised, lineWidth: 1)
+                        )
+                    Text(ingredient.name)
+                        .font(.system(size: 13))
+                        .foregroundStyle(Color.inkText)
+                    Spacer()
+                    Text(ingredient.amount)
+                        .font(.mono(12, weight: .medium))
+                        .foregroundStyle(Color.inkMuted)
+                }
+                .padding(.vertical, 6)
+                if ingredient.id != store.dish.ingredients.last?.id {
+                    Divider().overlay(Color.inkRaised.opacity(0.6))
+                }
+            }
+        }
+    }
+
+    // MARK: steps
+
+    private var stepsList: some View {
+        VStack(spacing: Spacing.sm) {
+            ForEach(Array(store.dish.steps.enumerated()), id: \.element.id) { index, step in
+                stepRow(index: index, step: step)
+            }
+        }
+        .animation(.snappy, value: store.activeStepIndex)
+        .animation(.snappy, value: store.completedSteps)
+    }
+
+    @ViewBuilder
+    private func stepRow(index: Int, step: RecipeStep) -> some View {
+        let isDone = store.completedSteps.contains(index)
+        let isActive = store.isCooking && store.activeStepIndex == index && !isDone
+        Button {
+            store.send(.stepTapped(index))
+        } label: {
+            HStack(alignment: .top, spacing: 12) {
+                stepBadge(index: index, isDone: isDone, isActive: isActive)
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack {
+                        MonoCaption(
+                            isActive ? "Шаг \(step.order) · Сейчас" : "Шаг \(step.order)",
+                            size: 10,
+                            color: isDone ? .cuisineItalian : (isActive ? .plasma : .inkMuted)
+                        )
+                        if let minutes = step.durationMinutes, !isActive {
+                            Text("· \(minutes) мин")
+                                .font(.mono(10, weight: .medium))
+                                .foregroundStyle(Color.inkMuted)
+                        }
+                        Spacer()
+                        if isActive, (step.durationMinutes ?? 0) > 0 {
+                            timerPill
+                        }
+                    }
+                    Text(step.title)
+                        .font(.system(size: isActive ? 16 : 14, weight: isActive ? .bold : .semibold, design: .rounded))
+                        .foregroundStyle(isDone ? Color.inkMuted : Color.inkText)
+                        .strikethrough(isDone, color: .inkMuted)
+                    if isActive {
+                        Text(step.description)
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color.inkText.opacity(0.85))
+                            .lineSpacing(3)
+                    }
+                }
+            }
+            .padding(isActive ? 14 : 12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(stepBackground(isDone: isDone, isActive: isActive))
+            .overlay(
+                RoundedRectangle(cornerRadius: isActive ? 16 : 14, style: .continuous)
+                    .stroke(
+                        isActive ? Color.plasma : Color.inkRaised,
+                        lineWidth: isActive ? 1.5 : 1
+                    )
+            )
+            .opacity(isDone ? 0.6 : 1)
+            .shadow(color: isActive ? Color.plasmaDeep.opacity(0.4) : .clear, radius: 12, y: 8)
+        }
+        .buttonStyle(.plain)
+        .disabled(!store.isCooking)
+    }
+
+    @ViewBuilder
+    private func stepBackground(isDone: Bool, isActive: Bool) -> some View {
+        if isActive {
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(
+                    LinearGradient(
+                        colors: [Color.plasmaDeep.opacity(0.55), Color.inkSurface],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+        } else {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.inkSurface.opacity(isDone ? 0.7 : 1))
+        }
+    }
+
+    private func stepBadge(index: Int, isDone: Bool, isActive: Bool) -> some View {
+        ZStack {
+            if isDone {
+                Circle().fill(Color.cuisineItalian)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 14, weight: .heavy))
+                    .foregroundStyle(.white)
+            } else if isActive {
+                Circle().fill(Color.plasma)
+                Text("\(index + 1)")
+                    .font(.system(size: 18, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.white)
+            } else {
+                Circle().fill(Color.inkRaised)
+                Circle().stroke(Color.inkMuted.opacity(0.4), lineWidth: 1.5)
+                Text("\(index + 1)")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.inkText.opacity(0.85))
+            }
+        }
+        .frame(width: isActive ? 44 : 36, height: isActive ? 44 : 36)
+        .shadow(color: isActive ? Color.plasmaDeep.opacity(0.6) : .clear, radius: 6, y: 4)
+    }
+
+    private var timerPill: some View {
+        Button {
+            store.send(.timerToggled)
+        } label: {
+            HStack(spacing: 4) {
+                Circle()
+                    .fill(store.isTimerRunning ? Color.cuisineItalian : Color.inkMuted)
+                    .frame(width: 6, height: 6)
+                    .shadow(
+                        color: store.isTimerRunning ? Color.cuisineItalian : .clear,
+                        radius: 3
+                    )
+                Text(timeString(store.remainingSeconds))
+                    .font(.mono(11))
+                    .foregroundStyle(Color.inkText)
+                    .contentTransition(.numericText())
+                    .animation(.linear(duration: 0.2), value: store.remainingSeconds)
+            }
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(Capsule().fill(Color.inkBase.opacity(0.5)))
+            .overlay(Capsule().stroke(Color.plasma.opacity(0.5), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func timeString(_ seconds: Int) -> String {
+        String(format: "%d:%02d", seconds / 60, seconds % 60)
+    }
+
+    // MARK: bottom bar
+
+    private var bottomBar: some View {
+        VStack {
+            Spacer()
+            Group {
+                if store.isCooking && !store.allStepsCompleted {
+                    cookingControls
+                } else if store.allStepsCompleted {
+                    primaryButton("Готово ✓") {
+                        Haptics.success()
+                        store.send(.closeTapped)
+                    }
+                } else {
+                    primaryButton("Начать готовить") {
+                        store.send(.startCookingTapped, animation: .snappy)
+                    }
+                }
+            }
+            .padding(.horizontal, Spacing.lg)
+            .padding(.top, Spacing.lg)
+            .padding(.bottom, Spacing.md)
+            .background(
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0),
+                        .init(color: Color.inkCanvas.opacity(0.95), location: 0.3),
+                        .init(color: Color.inkCanvas, location: 0.6)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea(edges: .bottom)
+            )
+        }
+    }
+
+    private var cookingControls: some View {
+        HStack(spacing: 10) {
+            Button {
+                store.send(.timerToggled)
+            } label: {
+                Image(systemName: store.isTimerRunning ? "pause.fill" : "play.fill")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(Color.inkText)
+                    .frame(width: 52, height: 52)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(Color.inkSurface)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .stroke(Color.inkRaised, lineWidth: 1)
+                    )
+            }
+            .pressScale()
+            .disabled((store.activeStep?.durationMinutes ?? 0) == 0)
+
+            Button {
+                Haptics.light()
+                store.send(.completeStepTapped, animation: .snappy)
+            } label: {
+                HStack(spacing: 8) {
+                    Text("Завершить шаг")
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 13, weight: .bold))
+                }
+                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.inkText)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(LinearGradient.plasmaCta)
+                )
+                .shadow(color: Color.plasmaDeep.opacity(0.5), radius: 12, y: 8)
+            }
+            .pressScale()
+        }
+    }
+
+    private func primaryButton(_ title: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.system(size: 15, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.inkText)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .fill(LinearGradient.plasmaCta)
+                )
+                .shadow(color: Color.plasmaDeep.opacity(0.5), radius: 12, y: 8)
+        }
+        .pressScale()
     }
 }
 
 #Preview {
     RecipeDetailView(
-        store: Store(initialState: RecipeDetailFeature.State(dish: Dish.previewCatalog[0])) {
+        store: Store(initialState: RecipeDetailFeature.State(dish: Dish.previewCatalog[2])) {
             RecipeDetailFeature()
         }
     )
