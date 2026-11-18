@@ -68,4 +68,9 @@ xcodebuild test  -scheme MealPlanner -destination 'platform=iOS Simulator,name=i
 - Trailing closure — только для последнего параметра-замыкания; при нескольких — все с метками.
 - Импорты по алфавиту, по одному на строку.
 
-> **Переходный период:** существующий код пока с отступом 4 пробела — переформат всего проекта идёт отдельным PR (`chore/swift-format`). До его merge в существующих файлах сохранять их стиль.
+Форматирование проверяется `swift-format` (конфиг `.swift-format` в корне). Перед коммитом:
+
+```sh
+xcrun swift-format format -i -r --parallel MealPlanner MealPlannerTests MealPlannerUITests
+xcrun swift-format lint -r MealPlanner MealPlannerTests MealPlannerUITests
+```
