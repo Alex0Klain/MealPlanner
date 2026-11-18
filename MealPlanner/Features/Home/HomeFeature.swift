@@ -29,7 +29,7 @@ public struct HomeFeature {
         case destination(PresentationAction<Destination.Action>)
     }
 
-    @Reducer(state: .equatable, action: .equatable)
+    @Reducer
     public enum Destination {
         case packOpening(PackOpeningFeature)
         case addMealSlot(AddMealSlotFeature)
@@ -147,3 +147,6 @@ public struct HomeFeature {
         .ifLet(\.$destination, action: \.destination)
     }
 }
+
+extension HomeFeature.Destination.State: Equatable {}
+extension HomeFeature.Destination.Action: Equatable {}
