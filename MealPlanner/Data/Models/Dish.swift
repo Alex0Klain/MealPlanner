@@ -1,92 +1,92 @@
 import Foundation
 
 public struct Dish: Identifiable, Codable, Sendable, Hashable {
-    public let id: UUID
-    public let name: String
-    public let cuisine: Cuisine
-    public let emoji: String
-    public let cookTimeMinutes: Int
-    public let calories: Int
-    public let proteinGrams: Int
-    public let rarity: Rarity
-    public let difficulty: Difficulty
-    public let cardNumber: Int?
-    /// Фото блюда (Unsplash). При nil или ошибке загрузки UI показывает
-    /// emoji на градиенте кухни.
-    public let imageURL: URL?
-    public let ingredients: [Ingredient]
-    public let steps: [RecipeStep]
+  public let id: UUID
+  public let name: String
+  public let cuisine: Cuisine
+  public let emoji: String
+  public let cookTimeMinutes: Int
+  public let calories: Int
+  public let proteinGrams: Int
+  public let rarity: Rarity
+  public let difficulty: Difficulty
+  public let cardNumber: Int?
+  /// Фото блюда (Unsplash). При nil или ошибке загрузки UI показывает
+  /// emoji на градиенте кухни.
+  public let imageURL: URL?
+  public let ingredients: [Ingredient]
+  public let steps: [RecipeStep]
 
-    public init(
-        id: UUID = UUID(),
-        name: String,
-        cuisine: Cuisine,
-        emoji: String,
-        cookTimeMinutes: Int,
-        calories: Int,
-        proteinGrams: Int,
-        rarity: Rarity,
-        difficulty: Difficulty,
-        cardNumber: Int? = nil,
-        imageURL: URL? = nil,
-        ingredients: [Ingredient],
-        steps: [RecipeStep]
-    ) {
-        self.id = id
-        self.name = name
-        self.cuisine = cuisine
-        self.emoji = emoji
-        self.cookTimeMinutes = cookTimeMinutes
-        self.calories = calories
-        self.proteinGrams = proteinGrams
-        self.rarity = rarity
-        self.difficulty = difficulty
-        self.cardNumber = cardNumber
-        self.imageURL = imageURL
-        self.ingredients = ingredients
-        self.steps = steps
-    }
+  public init(
+    id: UUID = UUID(),
+    name: String,
+    cuisine: Cuisine,
+    emoji: String,
+    cookTimeMinutes: Int,
+    calories: Int,
+    proteinGrams: Int,
+    rarity: Rarity,
+    difficulty: Difficulty,
+    cardNumber: Int? = nil,
+    imageURL: URL? = nil,
+    ingredients: [Ingredient],
+    steps: [RecipeStep],
+  ) {
+    self.id = id
+    self.name = name
+    self.cuisine = cuisine
+    self.emoji = emoji
+    self.cookTimeMinutes = cookTimeMinutes
+    self.calories = calories
+    self.proteinGrams = proteinGrams
+    self.rarity = rarity
+    self.difficulty = difficulty
+    self.cardNumber = cardNumber
+    self.imageURL = imageURL
+    self.ingredients = ingredients
+    self.steps = steps
+  }
 }
 
 public struct Ingredient: Codable, Sendable, Hashable, Identifiable {
-    public let id: UUID
-    public let emoji: String
-    public let name: String
-    public let amount: String
+  public let id: UUID
+  public let emoji: String
+  public let name: String
+  public let amount: String
 
-    public init(emoji: String, name: String, amount: String) {
-        self.id = UUID()
-        self.emoji = emoji
-        self.name = name
-        self.amount = amount
-    }
+  public init(emoji: String, name: String, amount: String) {
+    self.id = UUID()
+    self.emoji = emoji
+    self.name = name
+    self.amount = amount
+  }
 
-    // id — только для identity в UI, в dishes.json его нет.
-    private enum CodingKeys: String, CodingKey {
-        case emoji, name, amount
-    }
+  // id — только для identity в UI, в dishes.json его нет.
+  private enum CodingKeys: String, CodingKey {
+    case emoji, name, amount
+  }
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = UUID()
-        self.emoji = try container.decode(String.self, forKey: .emoji)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.amount = try container.decode(String.self, forKey: .amount)
-    }
+  public init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    self.id = UUID()
+    self.emoji = try container.decode(String.self, forKey: .emoji)
+    self.name = try container.decode(String.self, forKey: .name)
+    self.amount = try container.decode(String.self, forKey: .amount)
+  }
 }
 
 public struct RecipeStep: Codable, Sendable, Hashable, Identifiable {
-    public let order: Int
-    public let title: String
-    public let description: String
-    public let durationMinutes: Int?
+  public let order: Int
+  public let title: String
+  public let description: String
+  public let durationMinutes: Int?
 
-    public var id: Int { order }
+  public var id: Int { order }
 
-    public init(order: Int, title: String, description: String, durationMinutes: Int? = nil) {
-        self.order = order
-        self.title = title
-        self.description = description
-        self.durationMinutes = durationMinutes
-    }
+  public init(order: Int, title: String, description: String, durationMinutes: Int? = nil) {
+    self.order = order
+    self.title = title
+    self.description = description
+    self.durationMinutes = durationMinutes
+  }
 }

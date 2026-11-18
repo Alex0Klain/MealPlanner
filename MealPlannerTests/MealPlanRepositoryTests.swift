@@ -1,38 +1,38 @@
-import Testing
 import Foundation
 import MealPlanner
+import Testing
 
 @Suite("MealPlanRepository (in-memory)")
 struct MealPlanRepositoryTests {
 
-    @Test func savingPlanIsRetrievable() async throws {
-        let repo = MealPlanRepository.inMemory()
-        let date = Calendar.current.startOfDay(for: .now)
-        let dish = Dish.previewCatalog[0]
+  @Test func savingPlanIsRetrievable() async throws {
+    let repo = MealPlanRepository.inMemory()
+    let date = Calendar.current.startOfDay(for: .now)
+    let dish = Dish.previewCatalog[0]
 
-        try await repo.addMeal(dish.id, .breakfast, date)
-        let plan = await repo.planForDate(date)
+    try await repo.addMeal(dish.id, .breakfast, date)
+    let plan = await repo.planForDate(date)
 
-        #expect(plan?.meals.count == 1)
-        #expect(plan?.meals.first?.dishID == dish.id)
-        #expect(plan?.meals.first?.slot == .breakfast)
-    }
+    #expect(plan?.meals.count == 1)
+    #expect(plan?.meals.first?.dishID == dish.id)
+    #expect(plan?.meals.first?.slot == .breakfast)
+  }
 
-    @Test func removeMealClearsEntry() async throws {
-        let repo = MealPlanRepository.inMemory()
-        let date = Calendar.current.startOfDay(for: .now)
-        let dish = Dish.previewCatalog[1]
+  @Test func removeMealClearsEntry() async throws {
+    let repo = MealPlanRepository.inMemory()
+    let date = Calendar.current.startOfDay(for: .now)
+    let dish = Dish.previewCatalog[1]
 
-        try await repo.addMeal(dish.id, .dinner, date)
-        try await repo.removeMeal(dish.id, date)
-        let plan = await repo.planForDate(date)
+    try await repo.addMeal(dish.id, .dinner, date)
+    try await repo.removeMeal(dish.id, date)
+    let plan = await repo.planForDate(date)
 
-        #expect(plan?.meals.isEmpty == true)
-    }
+    #expect(plan?.meals.isEmpty == true)
+  }
 
-    @Test func weekPlansReturnsSevenDays() async {
-        let repo = MealPlanRepository.inMemory()
-        let plans = await repo.weekPlans(.now)
-        #expect(plans.count == 7)
-    }
+  @Test func weekPlansReturnsSevenDays() async {
+    let repo = MealPlanRepository.inMemory()
+    let plans = await repo.weekPlans(.now)
+    #expect(plans.count == 7)
+  }
 }

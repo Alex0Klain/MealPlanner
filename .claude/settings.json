@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_response.filePath // .tool_input.file_path'); case \"$f\" in *.swift) DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcrun swift-format format -i \"$f\" 2>/dev/null || true;; esac",
+            "timeout": 30,
+            "statusMessage": "swift-format…"
+          }
+        ]
+      }
+    ]
+  }
+}
