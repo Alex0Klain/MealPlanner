@@ -28,7 +28,7 @@ public struct WeekPlannerFeature {
         case path(StackAction<Path.State, Path.Action>)
     }
 
-    @Reducer(state: .equatable, action: .equatable)
+    @Reducer
     public enum Path {
         case dayDetail(DayDetailFeature)
     }
@@ -98,3 +98,6 @@ public struct WeekPlannerFeature {
         }
     }
 }
+
+extension WeekPlannerFeature.Path.State: Equatable {}
+extension WeekPlannerFeature.Path.Action: Equatable {}
