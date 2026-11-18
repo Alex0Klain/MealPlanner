@@ -75,10 +75,14 @@ public struct DistributeView: View {
                         .foregroundStyle(Color.plasma)
                 }
             }
-            HStack(alignment: .top, spacing: 10) {
-                ForEach(store.selectedCards) { card in
-                    stripCard(card)
-                        .frame(maxWidth: .infinity)
+            // Фиксированная ширина: с одной выбранной карточкой она не должна
+            // растягиваться на весь экран.
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .top, spacing: 10) {
+                    ForEach(store.selectedCards) { card in
+                        stripCard(card)
+                            .frame(width: 106)
+                    }
                 }
             }
         }
@@ -125,32 +129,25 @@ public struct DistributeView: View {
     }
 
     private func miniCard(_ card: PackCard, isActive: Bool, isAssigned: Bool) -> some View {
-        ZStack {
-            LinearGradient(
-                colors: [card.dish.cuisine.accentColor.opacity(0.5), Color.inkBase],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+        DishPhoto(dish: card.dish, emojiSize: 34)
+            .aspectRatio(7.0 / 10.0, contentMode: .fit)
+            .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .stroke(
+                        isActive ? Color.plasma : card.dish.rarity.borderColor,
+                        lineWidth: isActive ? 2 : 1.5
+                    )
             )
-            Text(card.dish.emoji).font(.system(size: 34))
-        }
-        .aspectRatio(7.0 / 10.0, contentMode: .fit)
-        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 10, style: .continuous)
-                .stroke(
-                    isActive ? Color.plasma : card.dish.rarity.borderColor,
-                    lineWidth: isActive ? 2 : 1.5
-                )
-        )
-        .opacity(isAssigned && !isActive ? 0.55 : 1)
-        .saturation(isAssigned && !isActive ? 0.6 : 1)
-        .offset(y: isActive ? -6 : 0)
-        .shadow(
-            color: isActive ? Color.plasmaDeep.opacity(0.5) : .clear,
-            radius: isActive ? 9 : 0, y: isActive ? 8 : 0
-        )
-        .rarityGlow(isAssigned ? .common : card.dish.rarity)
-        .animation(Motion.select, value: isActive)
+            .opacity(isAssigned && !isActive ? 0.55 : 1)
+            .saturation(isAssigned && !isActive ? 0.6 : 1)
+            .offset(y: isActive ? -6 : 0)
+            .shadow(
+                color: isActive ? Color.plasmaDeep.opacity(0.5) : .clear,
+                radius: isActive ? 9 : 0, y: isActive ? 8 : 0
+            )
+            .rarityGlow(isAssigned ? .common : card.dish.rarity)
+            .animation(Motion.select, value: isActive)
     }
 
     // MARK: slot targets
@@ -166,51 +163,81 @@ public struct DistributeView: View {
 
     @ViewBuilder
     private func slotRow(_ slot: MealSlot) -> some View {
+        let existing = store.existingBySlot[slot] ?? []
         let assignedCards = store.selectedCards.filter { store.distribution[$0.id] == slot }
+        let capacity = store.state.remainingCapacity(of: slot)
         let activeCard = store.activeDistributionID.flatMap { store.cards[id: $0] }
+        let contents = existing + assignedCards.map(\.dish)
 
         Button {
-            if let activeCard {
+            if let activeCard, capacity > 0 {
                 Haptics.success()
                 store.send(.slotAssigned(activeCard.id, slot))
             }
         } label: {
-            if !assignedCards.isEmpty {
-                filledSlotRow(slot: slot, cards: assignedCards)
-            } else if let activeCard {
-                dropTargetRow(slot: slot, cardName: activeCard.dish.name)
+            if contents.isEmpty {
+                if let activeCard {
+                    dropTargetRow(slot: slot, cardName: activeCard.dish.name, hint: nil)
+                } else {
+                    freeSlotRow(slot: slot)
+                }
+            } else if let activeCard, capacity > 0 {
+                dropTargetRow(
+                    slot: slot,
+                    cardName: activeCard.dish.name,
+                    hint: contents.map(\.name).joined(separator: ", ")
+                )
             } else {
-                freeSlotRow(slot: slot)
+                occupiedSlotRow(
+                    slot: slot,
+                    contents: contents,
+                    justAdded: !assignedCards.isEmpty,
+                    isFull: capacity == 0
+                )
             }
         }
         .buttonStyle(.plain)
         .animation(.snappy, value: store.distribution)
     }
 
-    private func filledSlotRow(slot: MealSlot, cards: [PackCard]) -> some View {
-        HStack(spacing: 10) {
-            ZStack {
-                LinearGradient(
-                    colors: [slot.accentColor.opacity(0.4), Color.inkBase],
-                    startPoint: .topLeading, endPoint: .bottomTrailing
-                )
-                Text(cards.first?.dish.emoji ?? "🍽").font(.system(size: 22))
+    /// Слот с блюдами: уже лежавшие в плане + распределённые на этом шаге.
+    private func occupiedSlotRow(
+        slot: MealSlot,
+        contents: [Dish],
+        justAdded: Bool,
+        isFull: Bool
+    ) -> some View {
+        let accent: Color = justAdded ? .cuisineItalian : .inkMuted
+        return HStack(spacing: 10) {
+            if let first = contents.first {
+                DishPhoto(dish: first, emojiSize: 22)
+                    .frame(width: 44, height: 60)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            .stroke(accent.opacity(0.7), lineWidth: 1)
+                    )
             }
-            .frame(width: 44, height: 60)
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8, style: .continuous)
-                    .stroke(Color.cuisineItalian.opacity(0.7), lineWidth: 1)
-            )
             VStack(alignment: .leading, spacing: 3) {
                 MonoCaption(slot.displayName, size: 9)
-                Text(cards.map(\.dish.name).joined(separator: ", "))
+                Text(contents.map(\.name).joined(separator: ", "))
                     .font(.system(size: 13, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.inkText)
-                    .lineLimit(1)
-                Text("✓ только что добавлено")
-                    .font(.mono(10, weight: .medium))
-                    .foregroundStyle(Color.cuisineItalian)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                if justAdded {
+                    Text("✓ только что добавлено")
+                        .font(.mono(10, weight: .medium))
+                        .foregroundStyle(Color.cuisineItalian)
+                } else if isFull {
+                    Text("Слот заполнен · \(MealSlot.mealsPerSlot) блюда")
+                        .font(.mono(10, weight: .medium))
+                        .foregroundStyle(Color.inkMuted)
+                } else {
+                    Text("В плане · есть место для второго")
+                        .font(.mono(10, weight: .medium))
+                        .foregroundStyle(Color.inkMuted)
+                }
             }
             Spacer(minLength: 0)
         }
@@ -218,21 +245,22 @@ public struct DistributeView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             LinearGradient(
-                colors: [Color.cuisineItalian.opacity(0.18), Color.inkSurface],
+                colors: [accent.opacity(justAdded ? 0.18 : 0.10), Color.inkSurface],
                 startPoint: .leading, endPoint: .trailing
             )
         )
         .overlay(alignment: .leading) {
-            Rectangle().fill(Color.cuisineItalian).frame(width: 3)
+            Rectangle().fill(accent).frame(width: 3)
         }
         .clipShape(RoundedRectangle(cornerRadius: Radius.slot, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: Radius.slot, style: .continuous)
-                .stroke(Color.cuisineItalian.opacity(0.5), lineWidth: 1.5)
+                .stroke(accent.opacity(0.5), lineWidth: 1.5)
         )
+        .opacity(isFull && !justAdded ? 0.65 : 1)
     }
 
-    private func dropTargetRow(slot: MealSlot, cardName: String) -> some View {
+    private func dropTargetRow(slot: MealSlot, cardName: String, hint: String?) -> some View {
         HStack(spacing: 10) {
             Image(systemName: "arrow.down")
                 .font(.system(size: 13, weight: .bold))
@@ -254,6 +282,13 @@ public struct DistributeView: View {
                     .foregroundStyle(Color.plasma)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
+                if let hint {
+                    Text("Уже в слоте: \(hint)")
+                        .font(.mono(9, weight: .medium))
+                        .foregroundStyle(Color.inkMuted)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                }
             }
             Spacer(minLength: 0)
         }

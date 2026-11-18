@@ -2,8 +2,8 @@ import ComposableArchitecture
 import SwiftUI
 
 /// Экран 01 из дизайна: «Сегодня — план дня».
-/// Header (дата-caption, приветствие, статистика) → Pack CTA →
-/// «План на день» → слоты → «+ Добавить ещё один приём».
+/// Header закреплён и не уезжает при скролле; контент — List, чтобы строки
+/// плана поддерживали нативный swipe-to-delete/replace.
 public struct HomeView: View {
     @Bindable public var store: StoreOf<HomeFeature>
 
@@ -15,22 +15,34 @@ public struct HomeView: View {
 
     public var body: some View {
         NavigationStack {
-            ZStack {
-                Color.inkBase.ignoresSafeArea()
-                ScrollView {
-                    VStack(alignment: .leading, spacing: Spacing.lg) {
-                        header
+            VStack(spacing: 0) {
+                header
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.top, Spacing.sm)
+                    .padding(.bottom, Spacing.md)
+                    .background(Color.inkBase)
+                List {
+                    Group {
                         PackCTAButton {
                             store.send(.packCtaTapped)
                         }
                         .matchedTransitionSource(id: "pack", in: heroNamespace)
-                        planSection
+
+                        MonoCaption("План на день", size: 11)
+                            .padding(.top, Spacing.sm)
+
+                        planRows
+
+                        addExtraMealButton
                     }
-                    .padding(.horizontal, Spacing.lg)
-                    .padding(.top, Spacing.sm)
-                    .padding(.bottom, Spacing.xl)
+                    .listRowInsets(EdgeInsets(top: 5, leading: Spacing.lg, bottom: 5, trailing: Spacing.lg))
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
                 }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
             }
+            .background(Color.inkBase.ignoresSafeArea())
             .toolbar(.hidden, for: .navigationBar)
         }
         .onAppear { store.send(.onAppear) }
@@ -54,16 +66,16 @@ public struct HomeView: View {
         }
     }
 
-    // MARK: header
+    // MARK: header (pinned)
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            MonoCaption(store.date.formatted(.dateTime.weekday(.wide).day().month(.wide)), size: 11)
+            MonoCaption(store.date.formatted(.dateTime.weekday(.wide).day().month(.wide).locale(.appRU)), size: 11)
             Text(greeting)
                 .font(.screenTitle)
                 .foregroundStyle(Color.inkText)
             HStack(spacing: 8) {
-                Text("\(store.plan.meals.count) из \(MealSlot.displayOrder.count) приёмов")
+                Text("\(filledSlots) из \(MealSlot.displayOrder.count) приёмов")
                     .font(.system(size: 12))
                     .foregroundStyle(Color.inkText.opacity(0.8))
                 dotSeparator
@@ -73,6 +85,7 @@ public struct HomeView: View {
             }
             .padding(.top, 2)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     private var dotSeparator: some View {
@@ -90,27 +103,52 @@ public struct HomeView: View {
         }
     }
 
+    /// Приёмы считаем по заполненным слотам, а не по числу блюд:
+    /// в слоте может лежать до двух блюд.
+    private var filledSlots: Int {
+        Set(store.plan.meals.map(\.slot)).count
+    }
+
     private var totalCalories: Int {
         store.plan.meals
             .compactMap { store.dishesByID[$0.dishID]?.calories }
             .reduce(0, +)
     }
 
-    // MARK: plan
+    // MARK: plan rows
 
-    private var planSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            MonoCaption("План на день", size: 11)
-                .padding(.top, Spacing.xs)
-            DayPlanColumn(
-                meals: store.plan.meals,
-                dishesByID: store.dishesByID,
-                heroNamespace: heroNamespace,
-                onSlotTap: { store.send(.slotTapped($0)) },
-                onMealTap: { store.send(.mealTapped($0)) },
-                onRemove:  { store.send(.removeMealTapped($0)) }
-            )
-            addExtraMealButton
+    @ViewBuilder
+    private var planRows: some View {
+        ForEach(MealSlot.displayOrder) { slot in
+            let mealsInSlot = store.plan.meals.filter { $0.slot == slot }
+            if mealsInSlot.isEmpty {
+                EmptySlotView(slot: slot) { store.send(.slotTapped(slot)) }
+            } else {
+                ForEach(mealsInSlot) { meal in
+                    if let dish = store.dishesByID[meal.dishID] {
+                        MealSlotRow(
+                            slot: slot,
+                            dish: dish,
+                            onTap: { store.send(.mealTapped(meal)) },
+                            onRemove: { store.send(.removeMealTapped(meal)) }
+                        )
+                        .matchedTransitionSource(id: dish.id, in: heroNamespace)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                store.send(.removeMealTapped(meal))
+                            } label: {
+                                Label("Убрать", systemImage: "trash")
+                            }
+                            Button {
+                                store.send(.replaceMealTapped(meal))
+                            } label: {
+                                Label("Заменить", systemImage: "arrow.triangle.2.circlepath")
+                            }
+                            .tint(Color.plasmaDeep)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -131,65 +169,6 @@ public struct HomeView: View {
             .contentShape(RoundedRectangle(cornerRadius: Radius.slot))
         }
         .pressScale()
-    }
-}
-
-/// Переиспользуемая колонка слотов плана — используется и в Home, и в DayDetail.
-public struct DayPlanColumn: View {
-    public let meals: [PlannedMeal]
-    public let dishesByID: [Dish.ID: Dish]
-    public var heroNamespace: Namespace.ID?
-    public var onSlotTap: (MealSlot) -> Void
-    public var onMealTap: (PlannedMeal) -> Void
-    public var onRemove:  (PlannedMeal) -> Void
-
-    public init(
-        meals: [PlannedMeal],
-        dishesByID: [Dish.ID: Dish],
-        heroNamespace: Namespace.ID? = nil,
-        onSlotTap: @escaping (MealSlot) -> Void,
-        onMealTap: @escaping (PlannedMeal) -> Void,
-        onRemove: @escaping (PlannedMeal) -> Void
-    ) {
-        self.meals = meals
-        self.dishesByID = dishesByID
-        self.heroNamespace = heroNamespace
-        self.onSlotTap = onSlotTap
-        self.onMealTap = onMealTap
-        self.onRemove = onRemove
-    }
-
-    public var body: some View {
-        VStack(spacing: Spacing.sm) {
-            ForEach(MealSlot.displayOrder) { slot in
-                let mealsInSlot = meals.filter { $0.slot == slot }
-                if mealsInSlot.isEmpty {
-                    EmptySlotView(slot: slot) { onSlotTap(slot) }
-                } else {
-                    ForEach(mealsInSlot) { meal in
-                        if let dish = dishesByID[meal.dishID] {
-                            mealRow(slot: slot, meal: meal, dish: dish)
-                        }
-                    }
-                }
-            }
-        }
-        .animation(.snappy, value: meals)
-    }
-
-    @ViewBuilder
-    private func mealRow(slot: MealSlot, meal: PlannedMeal, dish: Dish) -> some View {
-        let row = MealSlotRow(
-            slot: slot,
-            dish: dish,
-            onTap: { onMealTap(meal) },
-            onRemove: { onRemove(meal) }
-        )
-        if let heroNamespace {
-            row.matchedTransitionSource(id: dish.id, in: heroNamespace)
-        } else {
-            row
-        }
     }
 }
 

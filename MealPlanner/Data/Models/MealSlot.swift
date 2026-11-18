@@ -38,4 +38,10 @@ public enum MealSlot: String, Codable, Sendable, CaseIterable, Identifiable {
 
     /// Каноничный порядок отображения слотов в плане дня.
     public static let displayOrder: [MealSlot] = [.breakfast, .lunch, .dinner, .snack]
+
+    /// Один приём пищи вмещает до 2 блюд (например, два блюда на завтрак).
+    public static let mealsPerSlot = 2
+
+    /// Максимум блюд в дне: 4 слота × 2 блюда.
+    public static var dayCapacity: Int { displayOrder.count * mealsPerSlot }
 }

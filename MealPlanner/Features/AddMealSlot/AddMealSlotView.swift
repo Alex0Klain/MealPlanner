@@ -94,22 +94,16 @@ public struct AddMealSlotView: View {
             store.send(.dishTapped(dish))
         } label: {
             HStack(spacing: 10) {
-                ZStack {
-                    LinearGradient(
-                        colors: [dish.cuisine.accentColor.opacity(0.5), Color.inkBase],
-                        startPoint: .topLeading, endPoint: .bottomTrailing
+                DishPhoto(dish: dish, emojiSize: 20)
+                    .frame(width: 40, height: 40)
+                    .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .stroke(
+                                dish.rarity == .common ? Color.inkRaised : dish.rarity.borderColor,
+                                lineWidth: dish.rarity == .common ? 1 : 1.5
+                            )
                     )
-                    Text(dish.emoji).font(.system(size: 20))
-                }
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(
-                            dish.rarity == .common ? Color.inkRaised : dish.rarity.borderColor,
-                            lineWidth: dish.rarity == .common ? 1 : 1.5
-                        )
-                )
                 VStack(alignment: .leading, spacing: 2) {
                     Text(dish.name)
                         .font(.system(size: 14, weight: .bold, design: .rounded))

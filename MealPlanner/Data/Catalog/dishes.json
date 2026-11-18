@@ -11,16 +11,48 @@
     "difficulty": "one",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🌾", "name": "Овсяные хлопья", "amount": "60 г" },
-      { "emoji": "🥛", "name": "Молоко",         "amount": "200 мл" },
-      { "emoji": "🫐", "name": "Ягоды",          "amount": "горсть" },
-      { "emoji": "🍯", "name": "Мёд",            "amount": "по вкусу" }
+      {
+        "emoji": "🌾",
+        "name": "Овсяные хлопья",
+        "amount": "60 г"
+      },
+      {
+        "emoji": "🥛",
+        "name": "Молоко",
+        "amount": "200 мл"
+      },
+      {
+        "emoji": "🫐",
+        "name": "Ягоды",
+        "amount": "горсть"
+      },
+      {
+        "emoji": "🍯",
+        "name": "Мёд",
+        "amount": "по вкусу"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Залить молоко",    "description": "Поставить кастрюлю на средний огонь, влить молоко.", "durationMinutes": 2 },
-      { "order": 2, "title": "Добавить хлопья",  "description": "Всыпать овсянку, помешивать.",                       "durationMinutes": 5 },
-      { "order": 3, "title": "Подать с ягодами", "description": "Выключить огонь, добавить ягоды и мёд.",             "durationMinutes": 2 }
-    ]
+      {
+        "order": 1,
+        "title": "Залить молоко",
+        "description": "Поставить кастрюлю на средний огонь, влить молоко.",
+        "durationMinutes": 2
+      },
+      {
+        "order": 2,
+        "title": "Добавить хлопья",
+        "description": "Всыпать овсянку, помешивать.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 3,
+        "title": "Подать с ягодами",
+        "description": "Выключить огонь, добавить ягоды и мёд.",
+        "durationMinutes": 2
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000002",
@@ -34,16 +66,48 @@
     "difficulty": "two",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🧀", "name": "Творог",   "amount": "300 г" },
-      { "emoji": "🥚", "name": "Яйцо",     "amount": "1 шт" },
-      { "emoji": "🌾", "name": "Мука",     "amount": "3 ст. л." },
-      { "emoji": "🍬", "name": "Сахар",    "amount": "2 ст. л." }
+      {
+        "emoji": "🧀",
+        "name": "Творог",
+        "amount": "300 г"
+      },
+      {
+        "emoji": "🥚",
+        "name": "Яйцо",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🌾",
+        "name": "Мука",
+        "amount": "3 ст. л."
+      },
+      {
+        "emoji": "🍬",
+        "name": "Сахар",
+        "amount": "2 ст. л."
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Замесить тесто", "description": "Смешать творог, яйцо, сахар и муку до однородности.", "durationMinutes": 5 },
-      { "order": 2, "title": "Сформировать",   "description": "Скатать шарики, обвалять в муке и приплюснуть.",      "durationMinutes": 5 },
-      { "order": 3, "title": "Обжарить",       "description": "На среднем огне до золотистой корочки с двух сторон.", "durationMinutes": 12 }
-    ]
+      {
+        "order": 1,
+        "title": "Замесить тесто",
+        "description": "Смешать творог, яйцо, сахар и муку до однородности.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 2,
+        "title": "Сформировать",
+        "description": "Скатать шарики, обвалять в муке и приплюснуть.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 3,
+        "title": "Обжарить",
+        "description": "На среднем огне до золотистой корочки с двух сторон.",
+        "durationMinutes": 12
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000003",
@@ -57,18 +121,59 @@
     "difficulty": "two",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🍗", "name": "Куриное филе", "amount": "200 г" },
-      { "emoji": "🍜", "name": "Лапша рамен",  "amount": "100 г" },
-      { "emoji": "🥚", "name": "Яйцо",         "amount": "1 шт" },
-      { "emoji": "🧅", "name": "Зелёный лук",  "amount": "пучок" },
-      { "emoji": "🫛", "name": "Соевый соус",  "amount": "2 ст. л." }
+      {
+        "emoji": "🍗",
+        "name": "Куриное филе",
+        "amount": "200 г"
+      },
+      {
+        "emoji": "🍜",
+        "name": "Лапша рамен",
+        "amount": "100 г"
+      },
+      {
+        "emoji": "🥚",
+        "name": "Яйцо",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🧅",
+        "name": "Зелёный лук",
+        "amount": "пучок"
+      },
+      {
+        "emoji": "🫛",
+        "name": "Соевый соус",
+        "amount": "2 ст. л."
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Бульон",       "description": "Отварить курицу с луком и имбирём 20 минут.",              "durationMinutes": 20 },
-      { "order": 2, "title": "Лапша",        "description": "Отварить лапшу отдельно по инструкции.",                   "durationMinutes": 5 },
-      { "order": 3, "title": "Яйцо аджитама","description": "Сварить яйцо 7 минут, замариновать в соевом соусе.",        "durationMinutes": 7 },
-      { "order": 4, "title": "Собрать миску", "description": "В миску лапшу, бульон, нарезанную курицу, половинку яйца и лук.", "durationMinutes": 3 }
-    ]
+      {
+        "order": 1,
+        "title": "Бульон",
+        "description": "Отварить курицу с луком и имбирём 20 минут.",
+        "durationMinutes": 20
+      },
+      {
+        "order": 2,
+        "title": "Лапша",
+        "description": "Отварить лапшу отдельно по инструкции.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 3,
+        "title": "Яйцо аджитама",
+        "description": "Сварить яйцо 7 минут, замариновать в соевом соусе.",
+        "durationMinutes": 7
+      },
+      {
+        "order": 4,
+        "title": "Собрать миску",
+        "description": "В миску лапшу, бульон, нарезанную курицу, половинку яйца и лук.",
+        "durationMinutes": 3
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000004",
@@ -82,18 +187,59 @@
     "difficulty": "two",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🍝", "name": "Спагетти",   "amount": "200 г" },
-      { "emoji": "🥓", "name": "Гуанчале",   "amount": "100 г" },
-      { "emoji": "🥚", "name": "Желток",     "amount": "3 шт" },
-      { "emoji": "🧀", "name": "Пекорино",   "amount": "60 г" },
-      { "emoji": "🌶️", "name": "Чёрный перец","amount": "по вкусу" }
+      {
+        "emoji": "🍝",
+        "name": "Спагетти",
+        "amount": "200 г"
+      },
+      {
+        "emoji": "🥓",
+        "name": "Гуанчале",
+        "amount": "100 г"
+      },
+      {
+        "emoji": "🥚",
+        "name": "Желток",
+        "amount": "3 шт"
+      },
+      {
+        "emoji": "🧀",
+        "name": "Пекорино",
+        "amount": "60 г"
+      },
+      {
+        "emoji": "🌶️",
+        "name": "Чёрный перец",
+        "amount": "по вкусу"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Спагетти",  "description": "Отварить al dente в подсоленной воде.",                      "durationMinutes": 10 },
-      { "order": 2, "title": "Гуанчале",  "description": "Нарезать кубиками, обжарить до хрустящего состояния.",       "durationMinutes": 5 },
-      { "order": 3, "title": "Заправка",  "description": "Смешать желтки с тёртым пекорино и перцем.",                 "durationMinutes": 2 },
-      { "order": 4, "title": "Соединить", "description": "Снять пасту с огня, смешать с гуанчале и заправкой.",         "durationMinutes": 3 }
-    ]
+      {
+        "order": 1,
+        "title": "Спагетти",
+        "description": "Отварить al dente в подсоленной воде.",
+        "durationMinutes": 10
+      },
+      {
+        "order": 2,
+        "title": "Гуанчале",
+        "description": "Нарезать кубиками, обжарить до хрустящего состояния.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 3,
+        "title": "Заправка",
+        "description": "Смешать желтки с тёртым пекорино и перцем.",
+        "durationMinutes": 2
+      },
+      {
+        "order": 4,
+        "title": "Соединить",
+        "description": "Снять пасту с огня, смешать с гуанчале и заправкой.",
+        "durationMinutes": 3
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000005",
@@ -107,17 +253,53 @@
     "difficulty": "one",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🍅", "name": "Помидоры",   "amount": "2 шт" },
-      { "emoji": "🥒", "name": "Огурец",     "amount": "1 шт" },
-      { "emoji": "🧀", "name": "Фета",       "amount": "100 г" },
-      { "emoji": "🫒", "name": "Маслины",    "amount": "горсть" },
-      { "emoji": "🫒", "name": "Оливковое масло","amount": "2 ст. л." }
+      {
+        "emoji": "🍅",
+        "name": "Помидоры",
+        "amount": "2 шт"
+      },
+      {
+        "emoji": "🥒",
+        "name": "Огурец",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🧀",
+        "name": "Фета",
+        "amount": "100 г"
+      },
+      {
+        "emoji": "🫒",
+        "name": "Маслины",
+        "amount": "горсть"
+      },
+      {
+        "emoji": "🫒",
+        "name": "Оливковое масло",
+        "amount": "2 ст. л."
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Нарезать", "description": "Помидоры и огурец крупными кубиками.",            "durationMinutes": 5 },
-      { "order": 2, "title": "Собрать",  "description": "Смешать с маслинами, сверху положить кусок феты.", "durationMinutes": 3 },
-      { "order": 3, "title": "Заправить","description": "Полить оливковым маслом, посыпать орегано.",       "durationMinutes": 2 }
-    ]
+      {
+        "order": 1,
+        "title": "Нарезать",
+        "description": "Помидоры и огурец крупными кубиками.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 2,
+        "title": "Собрать",
+        "description": "Смешать с маслинами, сверху положить кусок феты.",
+        "durationMinutes": 3
+      },
+      {
+        "order": 3,
+        "title": "Заправить",
+        "description": "Полить оливковым маслом, посыпать орегано.",
+        "durationMinutes": 2
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000006",
@@ -131,16 +313,48 @@
     "difficulty": "two",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🍗", "name": "Куриное филе","amount": "300 г" },
-      { "emoji": "🫓", "name": "Тортильи",    "amount": "4 шт" },
-      { "emoji": "🥑", "name": "Авокадо",     "amount": "1 шт" },
-      { "emoji": "🌶️", "name": "Сальса",       "amount": "4 ст. л." }
+      {
+        "emoji": "🍗",
+        "name": "Куриное филе",
+        "amount": "300 г"
+      },
+      {
+        "emoji": "🫓",
+        "name": "Тортильи",
+        "amount": "4 шт"
+      },
+      {
+        "emoji": "🥑",
+        "name": "Авокадо",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🌶️",
+        "name": "Сальса",
+        "amount": "4 ст. л."
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Маринад",   "description": "Курицу замариновать в специях и лайме.",                "durationMinutes": 10 },
-      { "order": 2, "title": "Обжарить",  "description": "Жарить на сковороде до готовности, нарезать.",          "durationMinutes": 12 },
-      { "order": 3, "title": "Собрать",   "description": "На тортилью курицу, авокадо, сальсу. Свернуть.",        "durationMinutes": 5 }
-    ]
+      {
+        "order": 1,
+        "title": "Маринад",
+        "description": "Курицу замариновать в специях и лайме.",
+        "durationMinutes": 10
+      },
+      {
+        "order": 2,
+        "title": "Обжарить",
+        "description": "Жарить на сковороде до готовности, нарезать.",
+        "durationMinutes": 12
+      },
+      {
+        "order": 3,
+        "title": "Собрать",
+        "description": "На тортилью курицу, авокадо, сальсу. Свернуть.",
+        "durationMinutes": 5
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000007",
@@ -154,16 +368,48 @@
     "difficulty": "one",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🥐", "name": "Круассан",   "amount": "1 шт" },
-      { "emoji": "🥚", "name": "Яйцо",       "amount": "1 шт" },
-      { "emoji": "🧀", "name": "Сыр",        "amount": "30 г" },
-      { "emoji": "🥬", "name": "Зелень",     "amount": "по вкусу" }
+      {
+        "emoji": "🥐",
+        "name": "Круассан",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🥚",
+        "name": "Яйцо",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🧀",
+        "name": "Сыр",
+        "amount": "30 г"
+      },
+      {
+        "emoji": "🥬",
+        "name": "Зелень",
+        "amount": "по вкусу"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Разрезать",   "description": "Круассан вдоль, слегка подогреть.",   "durationMinutes": 3 },
-      { "order": 2, "title": "Яичница",     "description": "Пожарить яйцо в форме круга.",         "durationMinutes": 4 },
-      { "order": 3, "title": "Собрать",     "description": "Сыр, яйцо, зелень — закрыть.",         "durationMinutes": 2 }
-    ]
+      {
+        "order": 1,
+        "title": "Разрезать",
+        "description": "Круассан вдоль, слегка подогреть.",
+        "durationMinutes": 3
+      },
+      {
+        "order": 2,
+        "title": "Яичница",
+        "description": "Пожарить яйцо в форме круга.",
+        "durationMinutes": 4
+      },
+      {
+        "order": 3,
+        "title": "Собрать",
+        "description": "Сыр, яйцо, зелень — закрыть.",
+        "durationMinutes": 2
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000008",
@@ -177,19 +423,64 @@
     "difficulty": "three",
     "cardNumber": 3,
     "ingredients": [
-      { "emoji": "🍣", "name": "Лосось",      "amount": "180 г" },
-      { "emoji": "🍚", "name": "Рис",         "amount": "150 г" },
-      { "emoji": "🥑", "name": "Авокадо",     "amount": "1/2 шт" },
-      { "emoji": "🥒", "name": "Огурец",      "amount": "1/2 шт" },
-      { "emoji": "🫛", "name": "Соевый соус", "amount": "2 ст. л." },
-      { "emoji": "🌱", "name": "Нори",        "amount": "1 лист" }
+      {
+        "emoji": "🍣",
+        "name": "Лосось",
+        "amount": "180 г"
+      },
+      {
+        "emoji": "🍚",
+        "name": "Рис",
+        "amount": "150 г"
+      },
+      {
+        "emoji": "🥑",
+        "name": "Авокадо",
+        "amount": "1/2 шт"
+      },
+      {
+        "emoji": "🥒",
+        "name": "Огурец",
+        "amount": "1/2 шт"
+      },
+      {
+        "emoji": "🫛",
+        "name": "Соевый соус",
+        "amount": "2 ст. л."
+      },
+      {
+        "emoji": "🌱",
+        "name": "Нори",
+        "amount": "1 лист"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Рис",     "description": "Отварить рис, заправить рисовым уксусом.",          "durationMinutes": 15 },
-      { "order": 2, "title": "Лосось",  "description": "Нарезать кубиками, замариновать в соевом соусе.",    "durationMinutes": 5 },
-      { "order": 3, "title": "Овощи",   "description": "Авокадо и огурец нарезать кубиками.",                "durationMinutes": 3 },
-      { "order": 4, "title": "Подача",  "description": "Выложить рис в чашу, сверху овощи, лосось и нори.",  "durationMinutes": 2 }
-    ]
+      {
+        "order": 1,
+        "title": "Рис",
+        "description": "Отварить рис, заправить рисовым уксусом.",
+        "durationMinutes": 15
+      },
+      {
+        "order": 2,
+        "title": "Лосось",
+        "description": "Нарезать кубиками, замариновать в соевом соусе.",
+        "durationMinutes": 5
+      },
+      {
+        "order": 3,
+        "title": "Овощи",
+        "description": "Авокадо и огурец нарезать кубиками.",
+        "durationMinutes": 3
+      },
+      {
+        "order": 4,
+        "title": "Подача",
+        "description": "Выложить рис в чашу, сверху овощи, лосось и нори.",
+        "durationMinutes": 2
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000009",
@@ -203,19 +494,64 @@
     "difficulty": "three",
     "cardNumber": 4,
     "ingredients": [
-      { "emoji": "🥩", "name": "Говядина",        "amount": "600 г" },
-      { "emoji": "🍷", "name": "Красное вино",    "amount": "500 мл" },
-      { "emoji": "🥕", "name": "Морковь",         "amount": "2 шт" },
-      { "emoji": "🧅", "name": "Лук",             "amount": "1 шт" },
-      { "emoji": "🍄", "name": "Шампиньоны",      "amount": "200 г" },
-      { "emoji": "🌿", "name": "Букет гарни",     "amount": "1 шт" }
+      {
+        "emoji": "🥩",
+        "name": "Говядина",
+        "amount": "600 г"
+      },
+      {
+        "emoji": "🍷",
+        "name": "Красное вино",
+        "amount": "500 мл"
+      },
+      {
+        "emoji": "🥕",
+        "name": "Морковь",
+        "amount": "2 шт"
+      },
+      {
+        "emoji": "🧅",
+        "name": "Лук",
+        "amount": "1 шт"
+      },
+      {
+        "emoji": "🍄",
+        "name": "Шампиньоны",
+        "amount": "200 г"
+      },
+      {
+        "emoji": "🌿",
+        "name": "Букет гарни",
+        "amount": "1 шт"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Обжарить мясо",  "description": "Говядину обжарить со всех сторон до корочки.",      "durationMinutes": 10 },
-      { "order": 2, "title": "Овощи",          "description": "Добавить лук и морковь, обжарить.",                  "durationMinutes": 8 },
-      { "order": 3, "title": "Тушить в вине",  "description": "Залить вином с букетом гарни, тушить 2.5 часа.",     "durationMinutes": 150 },
-      { "order": 4, "title": "Грибы",          "description": "За 15 минут до конца добавить обжаренные шампиньоны.","durationMinutes": 12 }
-    ]
+      {
+        "order": 1,
+        "title": "Обжарить мясо",
+        "description": "Говядину обжарить со всех сторон до корочки.",
+        "durationMinutes": 10
+      },
+      {
+        "order": 2,
+        "title": "Овощи",
+        "description": "Добавить лук и морковь, обжарить.",
+        "durationMinutes": 8
+      },
+      {
+        "order": 3,
+        "title": "Тушить в вине",
+        "description": "Залить вином с букетом гарни, тушить 2.5 часа.",
+        "durationMinutes": 150
+      },
+      {
+        "order": 4,
+        "title": "Грибы",
+        "description": "За 15 минут до конца добавить обжаренные шампиньоны.",
+        "durationMinutes": 12
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=800&q=70&auto=format&fit=crop"
   },
   {
     "id": "11111111-0000-0000-0000-000000000010",
@@ -229,12 +565,30 @@
     "difficulty": "one",
     "cardNumber": null,
     "ingredients": [
-      { "emoji": "🥛", "name": "Йогурт",   "amount": "200 г" },
-      { "emoji": "🌾", "name": "Гранола", "amount": "50 г" },
-      { "emoji": "🍓", "name": "Клубника","amount": "100 г" }
+      {
+        "emoji": "🥛",
+        "name": "Йогурт",
+        "amount": "200 г"
+      },
+      {
+        "emoji": "🌾",
+        "name": "Гранола",
+        "amount": "50 г"
+      },
+      {
+        "emoji": "🍓",
+        "name": "Клубника",
+        "amount": "100 г"
+      }
     ],
     "steps": [
-      { "order": 1, "title": "Собрать", "description": "Йогурт в чашу, сверху гранола, клубника. Готово.", "durationMinutes": 3 }
-    ]
+      {
+        "order": 1,
+        "title": "Собрать",
+        "description": "Йогурт в чашу, сверху гранола, клубника. Готово.",
+        "durationMinutes": 3
+      }
+    ],
+    "imageURL": "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=70&auto=format&fit=crop"
   }
 ]

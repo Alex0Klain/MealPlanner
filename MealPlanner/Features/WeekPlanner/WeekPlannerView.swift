@@ -17,19 +17,22 @@ public struct WeekPlannerView: View {
         NavigationStack(
             path: $store.scope(state: \.path, action: \.path)
         ) {
-            ZStack {
-                Color.inkBase.ignoresSafeArea()
+            VStack(spacing: 0) {
+                header
+                    .padding(.horizontal, Spacing.lg)
+                    .padding(.top, Spacing.sm)
+                    .padding(.bottom, Spacing.md)
+                    .background(Color.inkBase)
                 ScrollView {
                     VStack(alignment: .leading, spacing: Spacing.md) {
-                        header
                         progressCard
                         daysList
                     }
                     .padding(.horizontal, Spacing.lg)
-                    .padding(.top, Spacing.sm)
                     .padding(.bottom, Spacing.xl)
                 }
             }
+            .background(Color.inkBase.ignoresSafeArea())
             .toolbar(.hidden, for: .navigationBar)
             .onAppear { store.send(.onAppear) }
         } destination: { pathStore in
@@ -69,8 +72,8 @@ public struct WeekPlannerView: View {
 
     private var weekRangeTitle: String {
         let end = Calendar.current.date(byAdding: .day, value: 6, to: store.weekStart) ?? store.weekStart
-        let startText = store.weekStart.formatted(.dateTime.day().month(.abbreviated))
-        let endText = end.formatted(.dateTime.day().month(.abbreviated))
+        let startText = store.weekStart.formatted(.dateTime.day().month(.abbreviated).locale(.appRU))
+        let endText = end.formatted(.dateTime.day().month(.abbreviated).locale(.appRU))
         return "\(startText) — \(endText)"
     }
 
@@ -80,11 +83,11 @@ public struct WeekPlannerView: View {
         VStack(spacing: 8) {
             HStack(alignment: .firstTextBaseline) {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("\(filledMeals)")
+                    Text("\(filledSlotsTotal)")
                         .font(.mono(22))
                         .foregroundStyle(Color.inkText)
                         .contentTransition(.numericText())
-                    Text("/ \(weekTarget) блюд")
+                    Text("/ \(weekTarget) приёмов")
                         .font(.mono(13, weight: .medium))
                         .foregroundStyle(Color.inkMuted)
                 }
@@ -130,9 +133,14 @@ public struct WeekPlannerView: View {
     }
 
     private var weekTarget: Int { MealSlot.displayOrder.count * 7 }
-    private var filledMeals: Int { store.days.reduce(0) { $0 + $1.meals.count } }
+
+    /// Заполненные слоты (приёмы), а не блюда: слот вмещает до 2 блюд.
+    private var filledSlotsTotal: Int {
+        store.days.reduce(0) { $0 + Set($1.meals.map(\.slot)).count }
+    }
+
     private var progressFraction: Double {
-        weekTarget > 0 ? Double(filledMeals) / Double(weekTarget) : 0
+        weekTarget > 0 ? min(1, Double(filledSlotsTotal) / Double(weekTarget)) : 0
     }
 
     private var legendaryCount: Int {
@@ -175,7 +183,7 @@ public struct WeekPlannerView: View {
                     if isEmpty {
                         openPackChip
                     } else {
-                        Text("\(snapshot.meals.count)/\(MealSlot.displayOrder.count) · \(calories(of: snapshot)) ккал")
+                        Text("\(filledSlots(of: snapshot))/\(MealSlot.displayOrder.count) · \(calories(of: snapshot)) ккал")
                             .font(.mono(10, weight: isToday ? .bold : .medium))
                             .foregroundStyle(isToday ? Color.plasma : Color.inkMuted)
                     }
@@ -207,7 +215,7 @@ public struct WeekPlannerView: View {
     }
 
     private func dayCaption(_ date: Date, isToday: Bool) -> String {
-        let weekday = date.formatted(.dateTime.weekday(.abbreviated))
+        let weekday = date.formatted(.dateTime.weekday(.abbreviated).locale(.appRU))
         return isToday ? "Сегодня · \(weekday)" : weekday
     }
 
@@ -221,6 +229,10 @@ public struct WeekPlannerView: View {
         snapshot.meals
             .compactMap { store.dishesByID[$0.dishID]?.calories }
             .reduce(0, +)
+    }
+
+    private func filledSlots(of snapshot: DayPlanSnapshot) -> Int {
+        Set(snapshot.meals.map(\.slot)).count
     }
 
     private func thumbnailsRow(_ snapshot: DayPlanSnapshot) -> some View {
@@ -237,27 +249,21 @@ public struct WeekPlannerView: View {
     }
 
     private func dishThumb(_ dish: Dish) -> some View {
-        ZStack {
-            LinearGradient(
-                colors: [dish.cuisine.accentColor.opacity(0.45), Color.inkBase],
-                startPoint: .topLeading, endPoint: .bottomTrailing
+        DishPhoto(dish: dish, emojiSize: 22)
+            .aspectRatio(1, contentMode: .fit)
+            .frame(maxWidth: .infinity)
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    .stroke(
+                        dish.rarity == .common ? Color.inkRaised : dish.rarity.borderColor,
+                        lineWidth: dish.rarity == .common ? 1 : 1.5
+                    )
             )
-            Text(dish.emoji).font(.system(size: 22))
-        }
-        .aspectRatio(1, contentMode: .fit)
-        .frame(maxWidth: .infinity)
-        .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 7, style: .continuous)
-                .stroke(
-                    dish.rarity == .common ? Color.inkRaised : dish.rarity.borderColor,
-                    lineWidth: dish.rarity == .common ? 1 : 1.5
-                )
-        )
-        .shadow(
-            color: dish.rarity == .common ? .clear : dish.rarity.borderColor.opacity(0.55),
-            radius: dish.rarity == .common ? 0 : 5
-        )
+            .shadow(
+                color: dish.rarity == .common ? .clear : dish.rarity.borderColor.opacity(0.55),
+                radius: dish.rarity == .common ? 0 : 5
+            )
     }
 
     private var emptyThumb: some View {

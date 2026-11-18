@@ -11,6 +11,9 @@ public struct Dish: Identifiable, Codable, Sendable, Hashable {
     public let rarity: Rarity
     public let difficulty: Difficulty
     public let cardNumber: Int?
+    /// Фото блюда (Unsplash). При nil или ошибке загрузки UI показывает
+    /// emoji на градиенте кухни.
+    public let imageURL: URL?
     public let ingredients: [Ingredient]
     public let steps: [RecipeStep]
 
@@ -25,6 +28,7 @@ public struct Dish: Identifiable, Codable, Sendable, Hashable {
         rarity: Rarity,
         difficulty: Difficulty,
         cardNumber: Int? = nil,
+        imageURL: URL? = nil,
         ingredients: [Ingredient],
         steps: [RecipeStep]
     ) {
@@ -38,6 +42,7 @@ public struct Dish: Identifiable, Codable, Sendable, Hashable {
         self.rarity = rarity
         self.difficulty = difficulty
         self.cardNumber = cardNumber
+        self.imageURL = imageURL
         self.ingredients = ingredients
         self.steps = steps
     }
