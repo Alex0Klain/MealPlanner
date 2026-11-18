@@ -62,7 +62,8 @@ public struct RecipeDetailView: View {
             Color.clear.frame(width: 36, height: 36)
         }
         .padding(.horizontal, Spacing.lg)
-        .padding(.vertical, Spacing.xs)
+        .padding(.top, Spacing.lg)
+        .padding(.bottom, Spacing.xs)
     }
 
     private var recipeCode: String {
@@ -77,16 +78,7 @@ public struct RecipeDetailView: View {
 
     private var hero: some View {
         ZStack {
-            LinearGradient(
-                colors: [
-                    store.dish.cuisine.accentColor.opacity(0.55),
-                    Color.inkSurface,
-                    Color.inkBase
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            Text(store.dish.emoji).font(.system(size: 96))
+            DishPhoto(dish: store.dish, emojiSize: 96)
             LinearGradient(
                 stops: [
                     .init(color: .black.opacity(0.25), location: 0),
@@ -163,30 +155,25 @@ public struct RecipeDetailView: View {
 
     private var compactHero: some View {
         ZStack(alignment: .leading) {
+            DishPhoto(dish: store.dish, emojiSize: 44)
             LinearGradient(
-                colors: [store.dish.cuisine.accentColor.opacity(0.5), Color.inkSurface],
+                colors: [Color.inkBase.opacity(0.9), Color.inkBase.opacity(0.35), .clear],
                 startPoint: .leading,
                 endPoint: .trailing
             )
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(store.dish.name)
-                        .font(.system(size: 18, weight: .heavy, design: .rounded))
-                        .foregroundStyle(
-                            store.dish.rarity == .legendary ? Color.rarityLegendary : Color.inkText
-                        )
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.8)
-                    Text("⏱ \(store.dish.cookTimeMinutes)м  🔥 \(store.dish.calories)  \(store.dish.difficulty.stars)")
-                        .font(.mono(10, weight: .medium))
-                        .foregroundStyle(Color.inkText.opacity(0.85))
-                }
-                .padding(.leading, 14)
-                Spacer()
-                Text(store.dish.emoji)
-                    .font(.system(size: 44))
-                    .padding(.trailing, 14)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(store.dish.name)
+                    .font(.system(size: 18, weight: .heavy, design: .rounded))
+                    .foregroundStyle(
+                        store.dish.rarity == .legendary ? Color.rarityLegendary : Color.inkText
+                    )
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                Text("⏱ \(store.dish.cookTimeMinutes)м  🔥 \(store.dish.calories)  \(store.dish.difficulty.stars)")
+                    .font(.mono(10, weight: .medium))
+                    .foregroundStyle(Color.inkText.opacity(0.85))
             }
+            .padding(.leading, 14)
         }
         .frame(height: 100)
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -292,6 +279,9 @@ public struct RecipeDetailView: View {
                     RoundedRectangle(cornerRadius: 9, style: .continuous)
                         .fill(isActive ? Color.inkRaised : .clear)
                 )
+                // Без contentShape тап ловится только по тексту:
+                // прозрачный фон неактивного сегмента не участвует в hit-testing.
+                .contentShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
         }
         .buttonStyle(.plain)
     }

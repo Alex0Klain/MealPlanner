@@ -23,6 +23,7 @@ public struct AddMealSlotFeature {
         case cancelTapped
         case delegate(Delegate)
 
+        @CasePathable
         public enum Delegate: Equatable {
             case picked(Dish, MealSlot)
             case dismiss

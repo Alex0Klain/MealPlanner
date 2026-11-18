@@ -65,23 +65,16 @@ public struct MealSlotRow: View {
     // MARK: pieces
 
     private var thumbnail: some View {
-        ZStack {
-            LinearGradient(
-                colors: [dish.cuisine.accentColor.opacity(0.5), Color.inkBase],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
+        DishPhoto(dish: dish, emojiSize: 24)
+            .frame(width: 44, height: 60)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                    .stroke(
+                        isRareOrBetter ? dish.rarity.borderColor : Color.inkRaised,
+                        lineWidth: isRareOrBetter ? 1.5 : 1
+                    )
             )
-            Text(dish.emoji).font(.system(size: 24))
-        }
-        .frame(width: 44, height: 60)
-        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .stroke(
-                    isRareOrBetter ? dish.rarity.borderColor : Color.inkRaised,
-                    lineWidth: isRareOrBetter ? 1.5 : 1
-                )
-        )
     }
 
     private var slotLabel: some View {

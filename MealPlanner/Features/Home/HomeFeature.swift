@@ -25,6 +25,7 @@ public struct HomeFeature {
         case slotTapped(MealSlot)
         case mealTapped(PlannedMeal)
         case removeMealTapped(PlannedMeal)
+        case replaceMealTapped(PlannedMeal)
         case destination(PresentationAction<Destination.Action>)
     }
 
@@ -67,7 +68,8 @@ public struct HomeFeature {
                 state.destination = .packOpening(
                     PackOpeningFeature.State(
                         date: state.date,
-                        alreadyInPlanIDs: Set(state.plan.meals.map(\.dishID))
+                        existingBySlot: Dictionary(grouping: state.plan.meals, by: \.slot)
+                            .mapValues { $0.compactMap { state.dishesByID[$0.dishID] } }
                     )
                 )
                 return .none
@@ -84,6 +86,19 @@ public struct HomeFeature {
                 return .none
 
             case let .removeMealTapped(meal):
+                let date = state.date
+                return .run { [mealPlanRepository] send in
+                    try? await mealPlanRepository.removeMeal(meal.dishID, date)
+                    let plan = await mealPlanRepository.planForDate(date) ?? DayPlanSnapshot(date: date)
+                    await send(.planLoaded(plan))
+                }
+
+            case let .replaceMealTapped(meal):
+                // «Заменить»: убираем блюдо и сразу открываем выбор нового
+                // для того же слота.
+                state.destination = .addMealSlot(
+                    AddMealSlotFeature.State(date: state.date, selectedSlot: meal.slot)
+                )
                 let date = state.date
                 return .run { [mealPlanRepository] send in
                     try? await mealPlanRepository.removeMeal(meal.dishID, date)

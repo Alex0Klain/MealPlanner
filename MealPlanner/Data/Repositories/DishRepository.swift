@@ -78,6 +78,7 @@ extension Dish {
             proteinGrams: 12,
             rarity: .common,
             difficulty: .one,
+            imageURL: URL(string: "https://images.unsplash.com/photo-1517673400267-0251440c45dc?w=800&q=70&auto=format&fit=crop"),
             ingredients: [
                 Ingredient(emoji: "🌾", name: "Овсяные хлопья", amount: "60 г"),
                 Ingredient(emoji: "🥛", name: "Молоко",         amount: "200 мл"),
@@ -106,6 +107,7 @@ extension Dish {
             proteinGrams: 32,
             rarity: .rare,
             difficulty: .two,
+            imageURL: URL(string: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=800&q=70&auto=format&fit=crop"),
             ingredients: [
                 Ingredient(emoji: "🍗", name: "Куриное филе", amount: "200 г"),
                 Ingredient(emoji: "🍜", name: "Лапша рамен",  amount: "100 г"),
@@ -131,6 +133,7 @@ extension Dish {
             rarity: .legendary,
             difficulty: .three,
             cardNumber: 3,
+            imageURL: URL(string: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=70&auto=format&fit=crop"),
             ingredients: [
                 Ingredient(emoji: "🍣", name: "Лосось", amount: "180 г"),
                 Ingredient(emoji: "🍚", name: "Рис",    amount: "150 г"),

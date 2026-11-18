@@ -8,17 +8,22 @@ public struct PackOpeningFeature {
         public var phase: Phase = .closed
         public var cards: IdentifiedArrayOf<PackCard> = []
         public var selectedIDs: Set<Dish.ID> = []
-        public var maxSelectable: Int = 7
+        public var maxSelectable: Int
         public var date: Date
+        /// Блюда, уже лежащие в плане дня, по слотам — для отображения
+        /// занятости на шаге Distribute и расчёта ёмкости.
+        public var existingBySlot: [MealSlot: [Dish]] = [:]
         public var alreadyInPlanIDs: Set<Dish.ID> = []
         public var distribution: [Dish.ID: MealSlot] = [:]
         /// Карточка, для которой сейчас выбирается слот на шаге Distribute.
         public var activeDistributionID: Dish.ID?
 
-        public init(date: Date, alreadyInPlanIDs: Set<Dish.ID> = []) {
+        public init(date: Date, existingBySlot: [MealSlot: [Dish]] = [:]) {
             self.date = date
-            self.alreadyInPlanIDs = alreadyInPlanIDs
-            self.maxSelectable = max(0, 7 - alreadyInPlanIDs.count)
+            self.existingBySlot = existingBySlot
+            self.alreadyInPlanIDs = Set(existingBySlot.values.flatMap { $0.map(\.id) })
+            let existingCount = existingBySlot.values.reduce(0) { $0 + $1.count }
+            self.maxSelectable = max(0, MealSlot.dayCapacity - existingCount)
         }
 
         public var canConfirmReveal: Bool {
@@ -40,6 +45,14 @@ public struct PackOpeningFeature {
 
         var firstUnassignedID: Dish.ID? {
             selectedCards.first { distribution[$0.id] == nil }?.id
+        }
+
+        /// Сколько блюд ещё поместится в слот с учётом уже лежащих
+        /// и распределённых на этом шаге.
+        public func remainingCapacity(of slot: MealSlot) -> Int {
+            let existing = existingBySlot[slot]?.count ?? 0
+            let assigned = distribution.values.count { $0 == slot }
+            return max(0, MealSlot.mealsPerSlot - existing - assigned)
         }
     }
 
@@ -66,6 +79,7 @@ public struct PackOpeningFeature {
         case closeTapped
         case delegate(Delegate)
 
+        @CasePathable
         public enum Delegate: Equatable {
             case finished([PlannedMeal])
             case dismiss
@@ -160,25 +174,33 @@ public struct PackOpeningFeature {
                 return .none
 
             case let .slotAssigned(dishID, slot):
+                // Слот вмещает не больше MealSlot.mealsPerSlot блюд —
+                // назначение в полный слот игнорируем.
+                guard state.remainingCapacity(of: slot) > 0 else { return .none }
                 state.distribution[dishID] = slot
                 state.activeDistributionID = state.firstUnassignedID
                 return .none
 
             case .autoAssignTapped:
-                // Нераспределённые карточки раскладываем по слотам:
-                // сначала свободные слоты в каноничном порядке, дальше по кругу.
-                let usedSlots = Set(state.distribution.values)
-                var queue = MealSlot.displayOrder.filter { !usedSlots.contains($0) }
-                var cycle = 0
+                // Нераспределённые карточки раскладываем по ёмкости:
+                // сначала пустые слоты в каноничном порядке, затем добираем
+                // вторыми блюдами. Полные слоты пропускаем.
                 for card in state.selectedCards where state.distribution[card.id] == nil {
-                    if queue.isEmpty {
-                        let order = MealSlot.displayOrder
-                        queue.append(order[cycle % order.count])
-                        cycle += 1
-                    }
-                    state.distribution[card.id] = queue.removeFirst()
+                    let target = MealSlot.displayOrder
+                        .filter { state.remainingCapacity(of: $0) > 0 }
+                        .min { lhs, rhs in
+                            let l = (state.existingBySlot[lhs]?.count ?? 0)
+                                + state.distribution.values.count { $0 == lhs }
+                            let r = (state.existingBySlot[rhs]?.count ?? 0)
+                                + state.distribution.values.count { $0 == rhs }
+                            if l != r { return l < r }
+                            let order = MealSlot.displayOrder
+                            return (order.firstIndex(of: lhs) ?? 0) < (order.firstIndex(of: rhs) ?? 0)
+                        }
+                    guard let target else { break }
+                    state.distribution[card.id] = target
                 }
-                state.activeDistributionID = nil
+                state.activeDistributionID = state.firstUnassignedID
                 return .none
 
             case .confirmDistributionTapped:

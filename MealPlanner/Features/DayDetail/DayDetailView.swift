@@ -2,8 +2,7 @@ import ComposableArchitecture
 import SwiftUI
 
 /// Side flow B из дизайна: Day Detail — тот же шаблон, что Home,
-/// но с навигацией «‹ дата ›» в шапке. Можно открывать пак и планировать
-/// задним числом и наперёд.
+/// с закреплённой навигацией «‹ дата ›» и swipe-действиями на строках плана.
 public struct DayDetailView: View {
     @Bindable public var store: StoreOf<DayDetailFeature>
 
@@ -14,22 +13,32 @@ public struct DayDetailView: View {
     }
 
     public var body: some View {
-        ZStack {
-            Color.inkBase.ignoresSafeArea()
-            ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.lg) {
-                    dayNav
+        VStack(spacing: 0) {
+            dayNav
+                .padding(.horizontal, Spacing.lg)
+                .padding(.top, Spacing.sm)
+                .padding(.bottom, Spacing.md)
+                .background(Color.inkBase)
+            List {
+                Group {
                     PackCTAButton {
                         store.send(.packCtaTapped)
                     }
                     .matchedTransitionSource(id: "day-pack", in: heroNamespace)
-                    planSection
+
+                    MonoCaption("План на день", size: 11)
+                        .padding(.top, Spacing.sm)
+
+                    planRows
                 }
-                .padding(.horizontal, Spacing.lg)
-                .padding(.top, Spacing.sm)
-                .padding(.bottom, Spacing.xl)
+                .listRowInsets(EdgeInsets(top: 5, leading: Spacing.lg, bottom: 5, trailing: Spacing.lg))
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
         }
+        .background(Color.inkBase.ignoresSafeArea())
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { store.send(.onAppear) }
         .fullScreenCover(
@@ -52,7 +61,7 @@ public struct DayDetailView: View {
         }
     }
 
-    // MARK: day navigation
+    // MARK: day navigation (pinned)
 
     private var dayNav: some View {
         HStack {
@@ -61,11 +70,11 @@ public struct DayDetailView: View {
             }
             Spacer()
             VStack(spacing: 2) {
-                Text(store.date.formatted(.dateTime.day().month(.wide).weekday(.abbreviated)))
+                Text(store.date.formatted(.dateTime.day().month(.wide).weekday(.abbreviated).locale(.appRU)))
                     .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.inkText)
                     .contentTransition(.numericText())
-                Text("\(store.plan.meals.count) из \(MealSlot.displayOrder.count) приёмов")
+                Text("\(filledSlots) из \(MealSlot.displayOrder.count) приёмов")
                     .font(.system(size: 11))
                     .foregroundStyle(Color.inkMuted)
             }
@@ -76,19 +85,44 @@ public struct DayDetailView: View {
         }
     }
 
-    // MARK: plan
+    private var filledSlots: Int {
+        Set(store.plan.meals.map(\.slot)).count
+    }
 
-    private var planSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.sm) {
-            MonoCaption("План на день", size: 11)
-            DayPlanColumn(
-                meals: store.plan.meals,
-                dishesByID: store.dishesByID,
-                heroNamespace: heroNamespace,
-                onSlotTap: { store.send(.slotTapped($0)) },
-                onMealTap: { store.send(.mealTapped($0)) },
-                onRemove:  { store.send(.removeMealTapped($0)) }
-            )
+    // MARK: plan rows
+
+    @ViewBuilder
+    private var planRows: some View {
+        ForEach(MealSlot.displayOrder) { slot in
+            let mealsInSlot = store.plan.meals.filter { $0.slot == slot }
+            if mealsInSlot.isEmpty {
+                EmptySlotView(slot: slot) { store.send(.slotTapped(slot)) }
+            } else {
+                ForEach(mealsInSlot) { meal in
+                    if let dish = store.dishesByID[meal.dishID] {
+                        MealSlotRow(
+                            slot: slot,
+                            dish: dish,
+                            onTap: { store.send(.mealTapped(meal)) },
+                            onRemove: { store.send(.removeMealTapped(meal)) }
+                        )
+                        .matchedTransitionSource(id: dish.id, in: heroNamespace)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                store.send(.removeMealTapped(meal))
+                            } label: {
+                                Label("Убрать", systemImage: "trash")
+                            }
+                            Button {
+                                store.send(.replaceMealTapped(meal))
+                            } label: {
+                                Label("Заменить", systemImage: "arrow.triangle.2.circlepath")
+                            }
+                            .tint(Color.plasmaDeep)
+                        }
+                    }
+                }
+            }
         }
     }
 }
