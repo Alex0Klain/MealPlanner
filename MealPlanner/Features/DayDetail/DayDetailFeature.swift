@@ -30,7 +30,7 @@ public struct DayDetailFeature {
         case destination(PresentationAction<Destination.Action>)
     }
 
-    @Reducer(state: .equatable, action: .equatable)
+    @Reducer
     public enum Destination {
         case packOpening(PackOpeningFeature)
         case addMealSlot(AddMealSlotFeature)
@@ -164,3 +164,6 @@ public struct DayDetailFeature {
         }
     }
 }
+
+extension DayDetailFeature.Destination.State: Equatable {}
+extension DayDetailFeature.Destination.Action: Equatable {}
